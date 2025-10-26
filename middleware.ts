@@ -1,6 +1,5 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import type { Address as SolanaAddress } from "@solana/kit";
 import { decodePayment } from "x402/schemes";
 import {
     computeRoutePatterns,
@@ -29,7 +28,7 @@ import { useFacilitator } from "x402/verify";
  * @returns A Next.js middleware handler
  */
 export function paymentMiddleware(
-    payTo: SolanaAddress,
+    payTo: string,
     routes: RoutesConfig,
     facilitator?: FacilitatorConfig,
 ) {
@@ -220,11 +219,10 @@ export type {
     RouteConfig,
     RoutesConfig,
 } from "x402/types";
-export type { Address as SolanaAddress } from "@solana/kit";
 
 // Get network from environment
 const network = (process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'solana-devnet') as 'solana' | 'solana-devnet';
-const resourceWallet = process.env.RESOURCE_SERVER_WALLET_ADDRESS as SolanaAddress;
+const resourceWallet = process.env.RESOURCE_SERVER_WALLET_ADDRESS as string;
 
 // Configure x402 middleware for protected routes
 export const middleware = paymentMiddleware(
