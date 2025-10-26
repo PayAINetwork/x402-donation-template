@@ -219,8 +219,8 @@ export default function Home() {
                   Transaction:{" "}
                   <a
                     href={`https://explorer.solana.com/tx/${donationResult.data.transactionSignature}?cluster=${process.env.NEXT_PUBLIC_SOLANA_NETWORK === "solana" ? "mainnet" : "devnet"}`}
-            target="_blank"
-            rel="noopener noreferrer"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-x402-cyan hover:underline"
                   >
                     View on Explorer
@@ -418,7 +418,7 @@ export default function Home() {
             )}
           </CardContent>
         </Card>
-        </div>
-      </main>
+      </div>
+    </main>
   );
 }

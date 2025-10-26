@@ -2,6 +2,43 @@
 
 A Next.js template for creating community donation portals for Solana tokens with x402 payment integration. Users can donate USDC and receive your token in return, with all donations recorded on-chain and displayed on a community message board.
 
+## 📖 Overview
+
+### What is this?
+
+This is a **community donation portal** that allows anyone to support your token project by making USDC donations and receiving your tokens in return. Think of it as a combination of:
+
+- 💰 **Token Faucet** - Distribute tokens to supporters
+- 💬 **Guestbook** - Community members can leave messages
+- 📊 **Leaderboard** - Track top donors and total raised
+- 🔐 **Payment Processor** - Seamless crypto payments via x402
+
+### How it works
+
+1. **Token Creator** (you) launches a token via PayAI Token Launcher
+2. **Token Creator** deploys this resource server template to Vercel
+3. **Resource Server** is automatically discoverable on [x402scan.com](https://x402scan.com)
+4. **Community Members** visit your donation portal and contribute USDC
+5. **Server** automatically mints tokens from your allocation to donors
+6. **Community Board** displays all donations, messages, and donor names
+
+### Why use this?
+
+- ✅ **No smart contracts required** - Just deploy to Vercel
+- ✅ **x402 protocol compliant** - Auto-discoverable, standard payments
+- ✅ **Community engagement** - Donors can leave messages and see the community
+- ✅ **Flexible pricing** - You set how many tokens per dollar
+- ✅ **Zero maintenance** - Serverless architecture, auto-scaling
+- ✅ **Transparent** - All donations recorded on Solana blockchain
+
+### Example Use Cases
+
+- 🚀 **Token Launch** - Distribute initial supply to early supporters
+- 💎 **Community Building** - Reward active community members
+- 🎁 **Fundraising** - Raise capital while distributing tokens
+- 🏆 **Contributor Rewards** - Thank contributors with tokens + recognition
+- 📣 **Marketing** - Let supporters leave messages promoting your project
+
 ## 🚀 Quick Deploy
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/postmanode/x402-token-sol)
