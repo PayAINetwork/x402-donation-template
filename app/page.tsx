@@ -156,6 +156,12 @@ export default function Home() {
             Support Our Community
           </h2>
           <p className="text-x402-text max-w-2xl mx-auto">
+            1. Donate to {tokenName} to get {tokenSymbol} tokens.
+          </p>
+          <p className="text-x402-text max-w-2xl mx-auto">
+            2. Write a message to the community with your {tokenSymbol} tokens.
+          </p>
+          <p className="text-x402-text max-w-2xl mx-auto">
             {tokenDescription}
           </p>
           <p className="text-x402-muted">
@@ -182,7 +188,7 @@ export default function Home() {
                 <TrendingUp className="h-8 w-8 text-x402-cyan" />
                 <div>
                   <p className="text-2xl font-bold text-x402-text">${stats.totalAmount.toFixed(2)}</p>
-                  <p className="text-sm text-x402-muted">Total Raised</p>
+                  <p className="text-sm text-x402-muted">Total Donated</p>
                 </div>
               </div>
             </CardContent>
