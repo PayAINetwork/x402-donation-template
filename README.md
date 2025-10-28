@@ -100,13 +100,13 @@ Create a `.env.local` file:
 
 ```bash
 # Token Configuration (from your token launch)
-TOKEN_MINT=<your_token_mint_address>
-TOKEN_NAME=<your_token_name>
-TOKEN_SYMBOL=<your_token_symbol>
-TOTAL_SUPPLY=<your_total_supply>
-MINTABLE_SUPPLY=<amount_allocated_for_donations>
-TOKEN_IMAGE_URL=<your_token_image_ipfs_url>
-TOKEN_DESCRIPTION=<your_token_description>
+NEXT_PUBLIC_TOKEN_MINT=<your_token_mint_address>
+NEXT_PUBLIC_TOKEN_NAME=<your_token_name>
+NEXT_PUBLIC_TOKEN_SYMBOL=<your_token_symbol>
+NEXT_PUBLIC_TOTAL_SUPPLY=<your_total_supply>
+NEXT_PUBLIC_MINTABLE_SUPPLY=<amount_allocated_for_donations>
+NEXT_PUBLIC_TOKEN_IMAGE_URL=<your_token_image_ipfs_url>
+NEXT_PUBLIC_TOKEN_DESCRIPTION=<your_token_description>
 
 # Donation Settings
 DOLLAR_TO_TOKEN_RATIO=1000  # How many tokens per $1 (e.g., 1000 = 1000 tokens per $1)
