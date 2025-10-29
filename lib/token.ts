@@ -14,7 +14,8 @@ export interface TokenConfig {
   mintableSupply: number;
   imageUrl: string;
   description: string;
-  dollarToTokenRatio: number;
+  donationTarget: number;
+  dollarToTokenRatio: number; // Calculated: mintableSupply / donationTarget
 }
 
 /**
@@ -28,7 +29,7 @@ export function getTokenConfig(): TokenConfig {
   const mintableSupply = process.env.MINTABLE_SUPPLY;
   const imageUrl = process.env.TOKEN_IMAGE_URL;
   const description = process.env.TOKEN_DESCRIPTION;
-  const dollarToTokenRatio = process.env.DOLLAR_TO_TOKEN_RATIO;
+  const donationTarget = process.env.DONATION_TARGET;
 
   if (
     !mint ||
@@ -38,20 +39,25 @@ export function getTokenConfig(): TokenConfig {
     !mintableSupply ||
     !imageUrl ||
     !description ||
-    !dollarToTokenRatio
+    !donationTarget
   ) {
     throw new Error("Token configuration incomplete in environment variables");
   }
+
+  const mintableSupplyNum = parseInt(mintableSupply);
+  const donationTargetNum = parseInt(donationTarget);
+  const dollarToTokenRatio = Math.floor(mintableSupplyNum / donationTargetNum);
 
   return {
     mint,
     name,
     symbol,
     totalSupply: parseInt(totalSupply),
-    mintableSupply: parseInt(mintableSupply),
+    mintableSupply: mintableSupplyNum,
     imageUrl,
     description,
-    dollarToTokenRatio: parseInt(dollarToTokenRatio),
+    donationTarget: donationTargetNum,
+    dollarToTokenRatio,
   };
 }
 
@@ -79,10 +85,10 @@ export async function transferTokens(
   const connection = getConnection();
   const resourceWallet = getResourceWallet();
   const tokenConfig = getTokenConfig();
-  
+
   const mint = new PublicKey(tokenConfig.mint);
   const recipient = new PublicKey(recipientAddress);
-  
+
   // Get resource server's token account
   const sourceTokenAccount = await getOrCreateAssociatedTokenAccount(
     connection,
@@ -94,7 +100,7 @@ export async function transferTokens(
     undefined,
     TOKEN_PROGRAM_ID
   );
-  
+
   // Get or create recipient's token account
   const destinationTokenAccount = await getOrCreateAssociatedTokenAccount(
     connection,
@@ -106,11 +112,11 @@ export async function transferTokens(
     undefined,
     TOKEN_PROGRAM_ID
   );
-  
+
   // Calculate amount in smallest units (assuming 9 decimals)
   const decimals = 9;
   const transferAmount = BigInt(amount) * BigInt(10 ** decimals);
-  
+
   // Transfer tokens
   const signature = await transfer(
     connection,
@@ -123,7 +129,7 @@ export async function transferTokens(
     undefined,
     TOKEN_PROGRAM_ID
   );
-  
+
   return signature;
 }
 

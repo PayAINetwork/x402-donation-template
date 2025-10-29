@@ -57,7 +57,9 @@ export default function Home() {
   const tokenSymbol = process.env.NEXT_PUBLIC_TOKEN_SYMBOL || "TOKEN";
   const tokenImage = process.env.NEXT_PUBLIC_TOKEN_IMAGE_URL;
   const tokenDescription = process.env.NEXT_PUBLIC_TOKEN_DESCRIPTION || "Support our community!";
-  const dollarToTokenRatio = parseInt(process.env.NEXT_PUBLIC_DOLLAR_TO_TOKEN_RATIO || "1000");
+  const mintableSupply = parseInt(process.env.NEXT_PUBLIC_MINTABLE_SUPPLY || "1000000");
+  const donationTarget = parseInt(process.env.NEXT_PUBLIC_DONATION_TARGET || "1000");
+  const dollarToTokenRatio = Math.floor(mintableSupply / donationTarget);
 
   useEffect(() => {
     setMounted(true);
@@ -170,7 +172,7 @@ export default function Home() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-x402-card border-x402-border">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
@@ -200,6 +202,17 @@ export default function Home() {
                 <div>
                   <p className="text-2xl font-bold text-x402-text">{stats.totalTokens.toLocaleString()}</p>
                   <p className="text-sm text-x402-muted">Tokens Distributed</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-x402-card border-x402-border">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <Coins className="h-8 w-8 text-x402-purple" />
+                <div>
+                  <p className="text-2xl font-bold text-x402-text">{(mintableSupply - stats.totalTokens).toLocaleString()}</p>
+                  <p className="text-sm text-x402-muted">Tokens Remaining</p>
                 </div>
               </div>
             </CardContent>

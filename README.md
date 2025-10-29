@@ -1,4 +1,4 @@
-# x402 Token Resource Server
+# x402 Donation Template
 
 A Next.js template for creating community donation portals for Solana tokens with x402 payment integration. Users can donate USDC and receive your token in return, with all donations recorded on-chain and displayed on a community message board.
 
@@ -41,7 +41,7 @@ This is a **community donation portal** that allows anyone to support your token
 
 ## 🚀 Quick Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/postmanode/x402-token-sol)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/postmanode/x402-donation-template)
 
 ## ✨ Features
 
@@ -108,8 +108,17 @@ NEXT_PUBLIC_MINTABLE_SUPPLY=<amount_allocated_for_donations>
 NEXT_PUBLIC_TOKEN_IMAGE_URL=<your_token_image_ipfs_url>
 NEXT_PUBLIC_TOKEN_DESCRIPTION=<your_token_description>
 
+# Frontend Token Configuration (for display purposes)
+NEXT_PUBLIC_TOKEN_NAME=<your_token_name>
+NEXT_PUBLIC_TOKEN_SYMBOL=<your_token_symbol>
+NEXT_PUBLIC_TOKEN_IMAGE_URL=<your_token_image_ipfs_url>
+NEXT_PUBLIC_TOKEN_DESCRIPTION=<your_token_description>
+NEXT_PUBLIC_MINTABLE_SUPPLY=<amount_allocated_for_donations>
+
 # Donation Settings
-DOLLAR_TO_TOKEN_RATIO=1000  # How many tokens per $1 (e.g., 1000 = 1000 tokens per $1)
+DONATION_TARGET=1000  # Target amount in USD to raise (e.g., 1000 = $1000)
+NEXT_PUBLIC_DONATION_TARGET=1000  # Same value for frontend display
+# Note: DOLLAR_TO_TOKEN_RATIO is calculated as MINTABLE_SUPPLY / DONATION_TARGET
 
 # Resource Server Wallet (holds tokens for distribution)
 RESOURCE_SERVER_WALLET_ADDRESS=<your_solana_address>
@@ -133,8 +142,8 @@ FACILITATOR_URL=https://facilitator.payai.network
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/postmanode/x402-token-sol.git
-   cd x402-token-sol
+   git clone https://github.com/postmanode/x402-donation-template.git
+   cd x402-donation-template
    ```
 
 2. **Install dependencies:**
@@ -203,13 +212,16 @@ pnpm dev
 
 ### Adjusting Token Distribution
 
-Edit `DOLLAR_TO_TOKEN_RATIO` in your environment variables:
+Edit `DONATION_TARGET` in your environment variables to control the token-to-dollar ratio:
 
 ```bash
-# Examples:
-DOLLAR_TO_TOKEN_RATIO=1000    # 1000 tokens per $1
-DOLLAR_TO_TOKEN_RATIO=10000   # 10,000 tokens per $1
-DOLLAR_TO_TOKEN_RATIO=100     # 100 tokens per $1
+# Examples (assuming 1,000,000 MINTABLE_SUPPLY):
+DONATION_TARGET=1000    # Ratio: 1000 tokens per $1 (1,000,000 / 1,000)
+DONATION_TARGET=100     # Ratio: 10,000 tokens per $1 (1,000,000 / 100)
+DONATION_TARGET=10000   # Ratio: 100 tokens per $1 (1,000,000 / 10,000)
+
+# The DOLLAR_TO_TOKEN_RATIO is automatically calculated as:
+# DOLLAR_TO_TOKEN_RATIO = MINTABLE_SUPPLY / DONATION_TARGET
 ```
 
 ### Customizing Donation Amounts
@@ -381,7 +393,7 @@ MIT
 
 ## ❓ Support
 
-- **Issues**: [GitHub Issues](https://github.com/postmanode/x402-token-sol/issues)
+- **Issues**: [GitHub Issues](https://github.com/postmanode/x402-donation-template/issues)
 - **Discord**: [PayAI Community](https://discord.gg/payai)
 - **Docs**: [x402 Documentation](https://x402.org/docs)
 
