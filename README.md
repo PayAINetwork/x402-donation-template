@@ -2,6 +2,8 @@
 
 A Next.js template for creating community donation portals for Solana tokens with x402 payment integration. Users can donate USDC and receive your token in return, with all donations recorded on-chain and displayed on a community message board.
 
+> **💡 Recommended**: Deploy this template via the [x402 Merchant Launcher](https://github.com/postmanode/x402-merchant-launcher) for automatic token creation, configuration, and one-click setup. Or follow the manual setup instructions below.
+
 ## 📖 Overview
 
 ### What is this?
@@ -15,12 +17,11 @@ This is a **community donation portal** that allows anyone to support your token
 
 ### How it works
 
-1. **Token Creator** (you) launches a token via PayAI Token Launcher
-2. **Token Creator** deploys this resource server template to Vercel
-3. **Resource Server** is automatically discoverable on [x402scan.com](https://x402scan.com)
-4. **Community Members** visit your donation portal and contribute USDC
-5. **Server** automatically mints tokens from your allocation to donors
-6. **Community Board** displays all donations, messages, and donor names
+1. **Token Creator** (you) uses [x402 Merchant Launcher](https://github.com/postmanode/x402-merchant-launcher) to create a token and deploy this template
+2. **Merchant Server** goes live on Vercel and is automatically discoverable on [x402scan.com](https://x402scan.com)
+3. **Community Members** visit your donation portal and contribute USDC
+4. **Server** automatically distributes tokens from your allocation to donors
+5. **Community Board** displays all donations, messages, and donor names in real-time
 
 ### Why use this?
 
