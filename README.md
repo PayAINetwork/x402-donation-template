@@ -31,6 +31,7 @@ This is a **community donation portal** that allows anyone to support your token
 - ✅ **Flexible pricing** - You set how many tokens per dollar
 - ✅ **Zero maintenance** - Serverless architecture, auto-scaling
 - ✅ **Transparent** - All donations recorded on Solana blockchain
+- ✅ **No database setup** - Uses centralized launcher database
 
 ### Example Use Cases
 
@@ -54,7 +55,7 @@ This is a **community donation portal** that allows anyone to support your token
 - 🔐 **Wallet Integration** - Phantom, Solflare, and more via Solana Wallet Adapter
 - 🎨 **Modern UI** - Beautiful dark theme with cyan accents (x402 style)
 - ⚡ **Built with Next.js 16** - Server components, API routes, and TypeScript
-- 🗄️ **Vercel Postgres** - Message storage with zero-config database
+- 🗄️ **Centralized Database** - Donations stored in launcher's database (no setup needed)
 
 ## 🏗️ Architecture
 
@@ -66,7 +67,7 @@ This is a **community donation portal** that allows anyone to support your token
 3. x402 middleware verifies payment with PayAI facilitator
 4. Payment settles on-chain (USDC transferred to resource wallet)
 5. Server mints tokens from resource wallet to donor
-6. Donation message saved to Vercel Postgres
+6. Donation message saved to launcher database (via API)
 7. User receives tokens + confirmation
 8. Community board updates with new message
 ```
@@ -92,8 +93,8 @@ This is a **community donation portal** that allows anyone to support your token
 
 - Node.js 18+ or pnpm
 - Solana wallet with devnet/mainnet SOL
-- Vercel account (for deployment and Postgres)
-- Token already created on Solana (via PayAI Token Launcher or similar)
+- Vercel account (for deployment)
+- Token already created on Solana (via x402 Merchant Launcher)
 
 ### Environment Variables
 
@@ -135,8 +136,8 @@ SOLANA_COMMITMENT=confirmed
 # PayAI Facilitator
 FACILITATOR_URL=https://facilitator.payai.network
 
-# Vercel Postgres (auto-configured by Vercel)
-# POSTGRES_URL=  # Auto-set by Vercel
+# Launcher API (for storing donations - auto-set when deployed via launcher)
+LAUNCHER_API_URL=https://launcher.payai.network
 ```
 
 ### Local Development
@@ -158,24 +159,14 @@ FACILITATOR_URL=https://facilitator.payai.network
    # Edit .env.local with your values
    ```
 
-4. **Set up Vercel Postgres (for local development):**
-   ```bash
-   # Install Vercel CLI
-   pnpm install -g vercel
-
-   # Link to your Vercel project
-   vercel link
-
-   # Pull environment variables (including Postgres)
-   vercel env pull .env.local
-   ```
-
-5. **Run the development server:**
+4. **Run the development server:**
    ```bash
 pnpm dev
    ```
 
-6. **Open http://localhost:3000** in your browser
+5. **Open http://localhost:3000** in your browser
+
+**Note**: Donations will not be saved when running locally unless you set `LAUNCHER_API_URL` to a deployed launcher instance.
 
 ### Deploying to Vercel
 
@@ -183,9 +174,7 @@ pnpm dev
 
 1. Click the "Deploy with Vercel" button above
 2. Configure environment variables in Vercel dashboard
-3. Add Vercel Postgres storage to your project:
-   - Go to Storage tab → Create Database → Postgres
-4. Redeploy to apply environment variables
+3. Deploy (no database setup needed - uses launcher's database)
 
 #### Option 2: Manual Deploy
 
@@ -200,12 +189,7 @@ pnpm dev
    - Configure environment variables
    - Deploy
 
-3. **Add Vercel Postgres:**
-   - Go to Storage tab
-   - Create Database → Postgres
-   - Database URL is automatically added to your project
-
-4. **Deploy x402 schema:**
+3. **Deploy x402 schema:**
    - Your site is now live at `your-project.vercel.app`
    - x402 schema accessible at `your-project.vercel.app/.well-known/x402.json`
 
