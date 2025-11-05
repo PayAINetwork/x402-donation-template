@@ -18,9 +18,7 @@ const nextConfig: NextConfig = {
 
     // Preserve existing ignoreWarnings while adding our filter
     // Webpack supports functions in ignoreWarnings
-    // @ts-expect-error - webpack type is not included here
     config.ignoreWarnings = [
-      // @ts-expect-error - keep existing if present
       ...(config.ignoreWarnings || []),
       prettyWarningFilter,
     ];
