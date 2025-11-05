@@ -53,8 +53,8 @@ export async function handleDonation(
     // Transfer tokens to donor
     const signature = await transferTokens(payerAddress, tokensToMint);
 
-    // Store donation record (without message)
-    await storeDonation(payerAddress, amountUsd, tokensToMint);
+    // Store donation record in launcher database
+    await storeDonation(payerAddress, amountUsd, tokensToMint, undefined, undefined, signature);
 
     return NextResponse.json({
       success: true,

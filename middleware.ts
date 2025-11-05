@@ -222,7 +222,12 @@ export type {
 
 // Get network from environment
 const network = (process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'solana-devnet') as 'solana' | 'solana-devnet';
-const resourceWallet = process.env.RESOURCE_SERVER_WALLET_ADDRESS as string;
+const resourceWallet = process.env.RESOURCE_SERVER_WALLET_ADDRESS;
+
+// Validate required environment variables
+if (!resourceWallet) {
+    throw new Error('RESOURCE_SERVER_WALLET_ADDRESS environment variable is required but not set');
+}
 
 // Configure x402 middleware for protected routes
 export const middleware = paymentMiddleware(
