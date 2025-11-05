@@ -71,8 +71,8 @@ export async function POST(request: NextRequest) {
     // Transfer tokens to donor
     const signature = await transferTokens(payerAddress, tokensToMint);
 
-    // Store donation record with message
-    await storeDonation(payerAddress, amount, tokensToMint, name, message);
+    // Store donation record with message in launcher database
+    await storeDonation(payerAddress, amount, tokensToMint, name, message, signature);
 
     return NextResponse.json({
       success: true,
