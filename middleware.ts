@@ -18,6 +18,7 @@ import {
     SupportedSVMNetworks,
 } from "x402/types";
 import { useFacilitator } from "x402/verify";
+import { getActualPayerFromSerializedTransaction } from "./lib/solana";
 
 /**
  * Creates a payment middleware factory for Next.js (Solana/SVM only)
@@ -168,7 +169,11 @@ export function paymentMiddleware(
         try {
             const settlement = await settle(decodedPayment, selectedPaymentRequirements);
 
+            console.log('[x402] Settlement response:', JSON.stringify(settlement, null, 2));
+            console.log('[x402] Decoded payment:', JSON.stringify(decodedPayment, null, 2));
+
             if (!settlement.success) {
+                console.error('[x402] Settlement failed:', settlement);
                 return new NextResponse(
                     JSON.stringify({
                         x402Version,
@@ -178,6 +183,32 @@ export function paymentMiddleware(
                     { status: 402, headers: { "Content-Type": "application/json" } },
                 );
             }
+
+            // Extract actual payer from the signed transaction in the payment payload
+            // settlement.payer is the facilitator's fee payer, not the actual donor
+            // The decodedPayment.payload.transaction contains the serialized signed transaction
+            let actualPayer = settlement.payer; // fallback
+            
+            try {
+                // The payload contains the signed transaction from the user's wallet
+                const serializedTx = (decodedPayment.payload as any)?.transaction;
+                if (serializedTx && typeof serializedTx === 'string') {
+                    const payerFromTx = getActualPayerFromSerializedTransaction(serializedTx);
+                    if (payerFromTx) {
+                        actualPayer = payerFromTx;
+                        console.log('[x402] Extracted actual payer from payment payload:', actualPayer);
+                    } else {
+                        console.warn('[x402] Could not extract actual payer from payload, using settlement.payer');
+                    }
+                } else {
+                    console.warn('[x402] No transaction found in payment payload, using settlement.payer');
+                }
+            } catch (error) {
+                console.error('[x402] Error extracting payer from payload:', error);
+                console.warn('[x402] Falling back to settlement.payer');
+            }
+            
+            console.log('[x402] Final payer:', actualPayer, '(Settlement payer:', settlement.payer, ')');
 
             // Proceed with request only after successful settlement
             const response = await NextResponse.next();
@@ -190,7 +221,7 @@ export function paymentMiddleware(
                         success: true,
                         transaction: settlement.transaction,
                         network: settlement.network,
-                        payer: settlement.payer,
+                        payer: actualPayer, // Use actual payer, not facilitator's fee payer
                     }),
                 ),
             );

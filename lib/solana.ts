@@ -1,4 +1,4 @@
-import { Connection, Keypair, clusterApiUrl } from "@solana/web3.js";
+import { Connection, Keypair, clusterApiUrl, VersionedTransaction } from "@solana/web3.js";
 import bs58 from "bs58";
 
 /**
@@ -68,5 +68,54 @@ export function getResourceWalletAddress(): string {
     }
 
     return address;
+}
+
+/**
+ * Extract the actual payer (donor) from a serialized transaction
+ * The payment payload contains the signed transaction, which we can deserialize
+ * to extract the user's wallet address (second signer, after the facilitator's fee payer)
+ * 
+ * @param serializedTransaction - Base64 encoded signed transaction from payment payload
+ * @returns The actual payer's wallet address (second signer)
+ */
+export function getActualPayerFromSerializedTransaction(serializedTransaction: string): string | null {
+    try {
+        // Deserialize the transaction
+        const txBuffer = Buffer.from(serializedTransaction, 'base64');
+        const transaction = VersionedTransaction.deserialize(txBuffer);
+
+        // Get account keys from the message
+        const message = transaction.message;
+        const accountKeys = message.getAccountKeys();
+
+        // Log for debugging
+        console.log('[Solana] Transaction account keys:', {
+            accountKeys: accountKeys.staticAccountKeys.map(key => key.toBase58()),
+        });
+
+        // In x402 with facilitator:
+        // - First signer (index 0): Fee payer (facilitator's wallet) 
+        // - Second signer (index 1): Actual payer (donor's connected wallet)
+        const staticKeys = accountKeys.staticAccountKeys;
+        
+        if (staticKeys.length >= 2) {
+            // Return the second signer (the actual donor)
+            const actualPayer = staticKeys[1].toBase58();
+            console.log('[Solana] Found actual payer:', actualPayer, '(Fee payer:', staticKeys[0].toBase58(), ')');
+            return actualPayer;
+        }
+
+        // Fallback: return first signer if only one exists
+        if (staticKeys.length >= 1) {
+            console.warn('[Solana] Only one signer found, using first signer as payer');
+            return staticKeys[0].toBase58();
+        }
+
+        console.error('[Solana] No signers found in transaction');
+        return null;
+    } catch (error) {
+        console.error('[Solana] Error deserializing transaction:', error);
+        return null;
+    }
 }
 
