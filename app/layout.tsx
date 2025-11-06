@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   description: tokenDescription,
   keywords: [tokenName, tokenSymbol, 'donation', 'crypto', 'solana', 'tokens', 'community'],
   authors: [{ name: tokenName }],
+  icons: tokenImage ? {
+    icon: tokenImage,
+    apple: tokenImage,
+    shortcut: tokenImage,
+  } : undefined,
   openGraph: {
     title: `${tokenName} (${tokenSymbol}) - Community Donation Portal`,
     description: tokenDescription,

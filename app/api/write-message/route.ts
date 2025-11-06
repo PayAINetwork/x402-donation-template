@@ -36,6 +36,11 @@ export async function POST(request: NextRequest) {
     try {
       const decoded = JSON.parse(Buffer.from(paymentResponse, "base64").toString());
       payerAddress = decoded.payer;
+      console.log('[write-message] Payment decoded:', {
+        payer: decoded.payer,
+        transaction: decoded.transaction,
+        network: decoded.network
+      });
     } catch (error) {
       return NextResponse.json(
         { success: false, error: "Invalid payment response" },
@@ -69,7 +74,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Transfer tokens to donor
+    console.log('[write-message] About to transfer tokens:', {
+      recipient: payerAddress,
+      amount: tokensToMint
+    });
     const signature = await transferTokens(payerAddress, tokensToMint);
+    console.log('[write-message] Token transfer successful:', {
+      signature,
+      recipient: payerAddress,
+      amount: tokensToMint
+    });
 
     // Store donation record with message in launcher database
     await storeDonation(payerAddress, amount, tokensToMint, name, message, signature);

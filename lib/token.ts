@@ -86,6 +86,12 @@ export async function transferTokens(
   const resourceWallet = getResourceWallet();
   const tokenConfig = getTokenConfig();
 
+  console.log('[token] Transfer tokens called:', {
+    recipientAddress,
+    amount,
+    resourceWallet: resourceWallet.publicKey.toBase58()
+  });
+
   const mint = new PublicKey(tokenConfig.mint);
   const recipient = new PublicKey(recipientAddress);
 
@@ -113,6 +119,13 @@ export async function transferTokens(
     TOKEN_PROGRAM_ID
   );
 
+  console.log('[token] Token accounts:', {
+    source: sourceTokenAccount.address.toBase58(),
+    destination: destinationTokenAccount.address.toBase58(),
+    destinationOwner: destinationTokenAccount.owner.toBase58(),
+    recipientPublicKey: recipient.toBase58()
+  });
+
   // Calculate amount in smallest units (assuming 9 decimals)
   const decimals = 9;
   const transferAmount = BigInt(amount) * BigInt(10 ** decimals);
@@ -129,6 +142,14 @@ export async function transferTokens(
     undefined,
     TOKEN_PROGRAM_ID
   );
+
+  console.log('[token] Transfer complete:', {
+    signature,
+    from: sourceTokenAccount.address.toBase58(),
+    to: destinationTokenAccount.address.toBase58(),
+    toOwner: recipient.toBase58(),
+    amount: transferAmount.toString()
+  });
 
   return signature;
 }
