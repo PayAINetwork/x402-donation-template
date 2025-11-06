@@ -5,7 +5,7 @@
 
 export interface DonationMessage {
     id: number;
-    donator_address: string;
+    donor_address: string;
     amount_usd: number;
     tokens_minted: number;
     name: string | null;
@@ -15,7 +15,7 @@ export interface DonationMessage {
 
 const LAUNCHER_API_URL = process.env.LAUNCHER_API_URL || process.env.NEXT_PUBLIC_LAUNCHER_URL;
 const LAUNCHER_API_KEY = process.env.LAUNCHER_API_KEY;
-const TOKEN_MINT = process.env.TOKEN_MINT;
+const TOKEN_MINT = process.env.NEXT_PUBLIC_TOKEN_MINT || process.env.TOKEN_MINT;
 
 if (!LAUNCHER_API_URL) {
     console.warn('[DB] LAUNCHER_API_URL not configured - donations will not be recorded');
@@ -65,7 +65,7 @@ export async function storeDonation(
         // Return a compatible format (even though ID might be different)
         return {
             id: result.donationId || 0,
-            donator_address: donatorAddress,
+            donor_address: donatorAddress,
             amount_usd: amountUsd,
             tokens_minted: tokensMinted,
             name: name || null,

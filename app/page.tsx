@@ -14,7 +14,7 @@ import { Loader2, Send, TrendingUp, Users, Coins } from "lucide-react";
 
 interface DonationMessage {
   id: number;
-  donator_address: string;
+  donor_address: string;
   amount_usd: number;
   tokens_minted: number;
   name: string | null;
@@ -418,7 +418,7 @@ export default function Home() {
                           {msg.name || "Anonymous"}
                         </p>
                         <p className="text-xs text-x402-muted">
-                          {formatAddress(msg.donator_address)} • {formatDate(msg.created_at)}
+                          {formatAddress(msg.donor_address)} • {formatDate(msg.created_at)}
                         </p>
                       </div>
                       <Badge className="bg-x402-cyan/20 text-x402-cyan border-x402-cyan">
