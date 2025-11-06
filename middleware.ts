@@ -169,9 +169,6 @@ export function paymentMiddleware(
         try {
             const settlement = await settle(decodedPayment, selectedPaymentRequirements);
 
-            console.log('[x402] Settlement response:', JSON.stringify(settlement, null, 2));
-            console.log('[x402] Decoded payment:', JSON.stringify(decodedPayment, null, 2));
-
             if (!settlement.success) {
                 console.error('[x402] Settlement failed:', settlement);
                 return new NextResponse(
@@ -196,19 +193,11 @@ export function paymentMiddleware(
                     const payerFromTx = getActualPayerFromSerializedTransaction(serializedTx);
                     if (payerFromTx) {
                         actualPayer = payerFromTx;
-                        console.log('[x402] Extracted actual payer from payment payload:', actualPayer);
-                    } else {
-                        console.warn('[x402] Could not extract actual payer from payload, using settlement.payer');
                     }
-                } else {
-                    console.warn('[x402] No transaction found in payment payload, using settlement.payer');
                 }
             } catch (error) {
                 console.error('[x402] Error extracting payer from payload:', error);
-                console.warn('[x402] Falling back to settlement.payer');
             }
-            
-            console.log('[x402] Final payer:', actualPayer, '(Settlement payer:', settlement.payer, ')');
 
             // Proceed with request only after successful settlement
             const response = await NextResponse.next();

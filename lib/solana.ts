@@ -88,11 +88,6 @@ export function getActualPayerFromSerializedTransaction(serializedTransaction: s
         const message = transaction.message;
         const accountKeys = message.getAccountKeys();
 
-        // Log for debugging
-        console.log('[Solana] Transaction account keys:', {
-            accountKeys: accountKeys.staticAccountKeys.map(key => key.toBase58()),
-        });
-
         // In x402 with facilitator:
         // - First signer (index 0): Fee payer (facilitator's wallet) 
         // - Second signer (index 1): Actual payer (donor's connected wallet)
@@ -100,18 +95,14 @@ export function getActualPayerFromSerializedTransaction(serializedTransaction: s
         
         if (staticKeys.length >= 2) {
             // Return the second signer (the actual donor)
-            const actualPayer = staticKeys[1].toBase58();
-            console.log('[Solana] Found actual payer:', actualPayer, '(Fee payer:', staticKeys[0].toBase58(), ')');
-            return actualPayer;
+            return staticKeys[1].toBase58();
         }
 
         // Fallback: return first signer if only one exists
         if (staticKeys.length >= 1) {
-            console.warn('[Solana] Only one signer found, using first signer as payer');
             return staticKeys[0].toBase58();
         }
 
-        console.error('[Solana] No signers found in transaction');
         return null;
     } catch (error) {
         console.error('[Solana] Error deserializing transaction:', error);
