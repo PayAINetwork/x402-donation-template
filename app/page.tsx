@@ -15,9 +15,9 @@ import { Loader2, Send, TrendingUp, Users, Coins } from "lucide-react";
 interface DonationMessage {
   id: number;
   donor_address: string;
+  donor_name: string | null;
   amount_usd: number;
   tokens_minted: number;
-  name: string | null;
   message: string | null;
   created_at: string;
 }
@@ -415,7 +415,7 @@ export default function Home() {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <p className="text-x402-text font-semibold">
-                          {msg.name || "Anonymous"}
+                          {msg.donor_name || "Anonymous"}
                         </p>
                         <p className="text-xs text-x402-muted">
                           {formatAddress(msg.donor_address)} • {formatDate(msg.created_at)}

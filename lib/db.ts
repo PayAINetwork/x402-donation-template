@@ -6,9 +6,9 @@
 export interface DonationMessage {
     id: number;
     donor_address: string;
+    donor_name: string | null;
     amount_usd: number;
     tokens_minted: number;
-    name: string | null;
     message: string | null;
     created_at: Date;
 }
@@ -66,9 +66,9 @@ export async function storeDonation(
         return {
             id: result.donationId || 0,
             donor_address: donatorAddress,
+            donor_name: name || null,
             amount_usd: amountUsd,
             tokens_minted: tokensMinted,
-            name: name || null,
             message: message || null,
             created_at: new Date(),
         };
