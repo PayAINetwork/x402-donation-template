@@ -43,7 +43,12 @@ export function DonationItem({
   return (
     <div
       className="py-4 border-b last:border-b-0"
-      style={{ borderColor: "rgba(255, 255, 255, 0.16)" }}
+      style={{
+        borderColor:
+          theme === "dark"
+            ? "rgba(255, 255, 255, 0.16)"
+            : "rgba(228, 228, 231, 1)",
+      }}
     >
       {/* Header Row */}
       <div className="flex items-center gap-3 mb-2">
@@ -64,7 +69,15 @@ export function DonationItem({
 
         {/* Donor Name */}
         <div className="flex-1 flex items-center justify-between">
-          <p className="text-white font-semibold text-sm">
+          <p
+            className="font-semibold text-sm"
+            style={{
+              color:
+                theme === "dark"
+                  ? "rgba(255, 255, 255, 1)"
+                  : "rgba(9, 9, 11, 1)",
+            }}
+          >
             {donor_name || "Anonymous"}
           </p>
           <p className="text-gray-400 text-xs">{formatTimeAgo(created_at)}</p>
@@ -76,11 +89,24 @@ export function DonationItem({
         <div
           className="mb-2 p-3 rounded"
           style={{
-            background: "rgba(24, 24, 26, 1)",
+            background:
+              theme === "dark"
+                ? "rgba(24, 24, 26, 1)"
+                : "rgba(244, 244, 245, 1)",
             borderLeft: "2px solid rgba(150, 71, 253, 1)",
           }}
         >
-          <p className="text-white text-sm">{message}</p>
+          <p
+            className="text-sm"
+            style={{
+              color:
+                theme === "dark"
+                  ? "rgba(255, 255, 255, 1)"
+                  : "rgba(9, 9, 11, 1)",
+            }}
+          >
+            {message}
+          </p>
         </div>
       )}
 
@@ -90,13 +116,25 @@ export function DonationItem({
           <span className="text-gray-400">Donation Amount: </span>
           <span
             className="font-semibold"
-            style={{ color: "rgba(34, 191, 145, 1)" }}
+            style={{
+              color:
+                theme === "dark"
+                  ? "rgba(34, 191, 145, 1)"
+                  : "rgba(22, 163, 74, 1)",
+            }}
           >
             ${amount_usd} USDC
           </span>
           <span className="text-gray-400 mx-2">|</span>
           <span className="text-gray-400">Tokens Received: </span>
-          <span style={{ color: "rgba(255, 255, 255, 0.8)" }}>
+          <span
+            style={{
+              color:
+                theme === "dark"
+                  ? "rgba(255, 255, 255, 0.8)"
+                  : "rgba(9, 9, 11, 0.8)",
+            }}
+          >
             {formatTokens(tokens_minted)} {tokenSymbol}
           </span>
         </p>

@@ -49,7 +49,7 @@ interface MessagesResponse {
 
 export default function Home() {
   // Theme variable: "dark" for dark mode, anything else for light mode
-  const theme = "dark";
+  const theme = "light" as "dark" | "light";
 
   const { connected, publicKey, disconnect } = useWallet();
   const { initiatePayment, isProcessing, error } = useX402Payment();
@@ -164,7 +164,7 @@ export default function Home() {
           borderRight:
             theme === "dark"
               ? "1px solid rgba(255, 255, 255, 0.16)"
-              : "1px solid rgba(0, 0, 0, 1)",
+              : "1px solid rgba(228, 228, 231, 1)",
         }}
       >
         {/* Header */}
@@ -176,7 +176,7 @@ export default function Home() {
             borderBottom:
               theme === "dark"
                 ? "1px solid rgba(255, 255, 255, 0.16)"
-                : "1px solid rgba(9, 9, 11, 1)",
+                : "1px solid rgba(228, 228, 231, 1)",
           }}
         >
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -189,7 +189,15 @@ export default function Home() {
                 />
               )}
               <div>
-                <h1 className="text-2xl font-bold text-x402-text">
+                <h1
+                  className="text-2xl font-bold"
+                  style={{
+                    color:
+                      theme === "dark"
+                        ? "rgba(255, 255, 255, 1)"
+                        : "rgba(9, 9, 11, 1)",
+                  }}
+                >
                   {tokenName}
                 </h1>
                 <p className="text-sm text-x402-muted">${tokenSymbol}</p>
@@ -224,8 +232,14 @@ export default function Home() {
           <div
             className="grid rounded-lg h-auto mb-8"
             style={{
-              background: "rgba(255, 255, 255, 0.06)",
-              border: "2px solid rgba(255, 255, 255, 0.16)",
+              background:
+                theme === "dark"
+                  ? "rgba(255, 255, 255, 0.06)"
+                  : "rgba(255, 255, 255, 1)",
+              border:
+                theme === "dark"
+                  ? "2px solid rgba(255, 255, 255, 0.16)"
+                  : "2px solid rgba(228, 228, 231, 1)",
               gridTemplateColumns: "1fr auto 1fr auto 1fr auto 1fr",
             }}
           >
@@ -240,10 +254,28 @@ export default function Home() {
               <CardContent>
                 <div>
                   <div>
-                    <p className="text-2xl font-bold text-x402-text">
+                    <p
+                      className="text-2xl font-bold"
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 1)"
+                            : "rgba(9, 9, 11, 1)",
+                      }}
+                    >
                       {stats.totalDonations}
                     </p>
-                    <p className="text-sm text-x402-text">Total Donors</p>
+                    <p
+                      className="text-sm"
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 1)"
+                            : "rgba(113, 113, 122, 1)",
+                      }}
+                    >
+                      Total Donors
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -251,7 +283,10 @@ export default function Home() {
             <div
               style={{
                 width: "1px",
-                background: "rgba(255, 255, 255, 0.16)",
+                background:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 0.16)"
+                    : "rgba(228, 228, 231, 1)",
                 alignSelf: "stretch",
                 marginTop: "1.5rem",
                 marginBottom: "1.5rem",
@@ -268,10 +303,28 @@ export default function Home() {
               <CardContent>
                 <div>
                   <div>
-                    <p className="text-2xl font-bold text-x402-text">
+                    <p
+                      className="text-2xl font-bold"
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 1)"
+                            : "rgba(9, 9, 11, 1)",
+                      }}
+                    >
                       ${stats.totalAmount.toFixed(2)}
                     </p>
-                    <p className="text-sm text-x402-text">Total Donated</p>
+                    <p
+                      className="text-sm"
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 1)"
+                            : "rgba(113, 113, 122, 1)",
+                      }}
+                    >
+                      Total Donated
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -279,7 +332,10 @@ export default function Home() {
             <div
               style={{
                 width: "1px",
-                background: "rgba(255, 255, 255, 0.16)",
+                background:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 0.16)"
+                    : "rgba(228, 228, 231, 1)",
                 alignSelf: "stretch",
                 marginTop: "1.5rem",
                 marginBottom: "1.5rem",
@@ -296,10 +352,28 @@ export default function Home() {
               <CardContent>
                 <div>
                   <div>
-                    <p className="text-2xl font-bold text-x402-text">
+                    <p
+                      className="text-2xl font-bold"
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 1)"
+                            : "rgba(9, 9, 11, 1)",
+                      }}
+                    >
                       {stats.totalTokens.toLocaleString()}
                     </p>
-                    <p className="text-sm text-x402-text">Tokens Distributed</p>
+                    <p
+                      className="text-sm"
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 1)"
+                            : "rgba(113, 113, 122, 1)",
+                      }}
+                    >
+                      Tokens Distributed
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -307,7 +381,10 @@ export default function Home() {
             <div
               style={{
                 width: "1px",
-                background: "rgba(255, 255, 255, 0.16)",
+                background:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 0.16)"
+                    : "rgba(228, 228, 231, 1)",
                 alignSelf: "stretch",
                 marginTop: "1.5rem",
                 marginBottom: "1.5rem",
@@ -324,32 +401,69 @@ export default function Home() {
               <CardContent>
                 <div>
                   <div>
-                    <p className="text-2xl font-bold text-x402-text">
+                    <p
+                      className="text-2xl font-bold"
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 1)"
+                            : "rgba(9, 9, 11, 1)",
+                      }}
+                    >
                       {(mintableSupply - stats.totalTokens).toLocaleString()}
                     </p>
-                    <p className="text-sm text-x402-text">Tokens Remaining</p>
+                    <p
+                      className="text-sm"
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 1)"
+                            : "rgba(113, 113, 122, 1)",
+                      }}
+                    >
+                      Tokens Remaining
+                    </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
-          <div className="flex justify-between text-gray-50 items-center mb-4 mt-8">
-            <h1 className="text-gray-50 font-normal">Community Board</h1>
+          <div className="flex justify-between items-center mb-4 mt-8">
+            <h1
+              className="font-normal"
+              style={{
+                color:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 1)"
+                    : "rgba(9, 9, 11, 1)",
+              }}
+            >
+              Community Board
+            </h1>
             <div
               className="flex gap-2 rounded-full"
               style={{
-                border: "1px solid rgba(255, 255, 255, 0.16)",
+                border:
+                  theme === "dark"
+                    ? "1px solid rgba(255, 255, 255, 0.16)"
+                    : "1px solid rgba(228, 228, 231, 1)",
+                background:
+                  theme === "light" ? "rgba(235, 235, 235, 1)" : "transparent",
               }}
             >
               {sortBy === "recent" ? (
                 <button
                   onClick={() => setSortBy("recent")}
-                  className="px-3 py-1 text-sm text-gray-400 rounded-full flex-1"
+                  className="px-3 py-1 text-sm rounded-full flex-1"
                   style={{
                     background:
                       theme === "dark"
                         ? "rgba(255, 255, 255, 0.1)"
-                        : "rgba(0, 0, 0, 0.1)",
+                        : "rgba(9, 9, 11, 1)",
+                    color:
+                      theme === "dark"
+                        ? "rgba(156, 163, 175, 1)"
+                        : "rgba(255, 255, 255, 1)",
                   }}
                 >
                   Recent
@@ -357,7 +471,14 @@ export default function Home() {
               ) : (
                 <button
                   onClick={() => setSortBy("recent")}
-                  className="px-3 py-1 text-sm text-gray-400 rounded-full flex-1"
+                  className="px-3 py-1 text-sm rounded-full flex-1"
+                  style={{
+                    background: "transparent",
+                    color:
+                      theme === "dark"
+                        ? "rgba(156, 163, 175, 1)"
+                        : "rgba(113, 113, 122, 1)",
+                  }}
                 >
                   Recent
                 </button>
@@ -365,12 +486,16 @@ export default function Home() {
               {sortBy === "top" ? (
                 <button
                   onClick={() => setSortBy("top")}
-                  className="px-3 py-1 text-sm text-gray-400 rounded-full flex-1"
+                  className="px-3 py-1 text-sm rounded-full flex-1"
                   style={{
                     background:
                       theme === "dark"
                         ? "rgba(255, 255, 255, 0.1)"
-                        : "rgba(0, 0, 0, 0.1)",
+                        : "rgba(9, 9, 11, 1)",
+                    color:
+                      theme === "dark"
+                        ? "rgba(156, 163, 175, 1)"
+                        : "rgba(255, 255, 255, 1)",
                   }}
                 >
                   Top
@@ -378,7 +503,14 @@ export default function Home() {
               ) : (
                 <button
                   onClick={() => setSortBy("top")}
-                  className="px-3 py-1 text-sm text-gray-400 rounded-full flex-1"
+                  className="px-3 py-1 text-sm rounded-full flex-1"
+                  style={{
+                    background: "transparent",
+                    color:
+                      theme === "dark"
+                        ? "rgba(156, 163, 175, 1)"
+                        : "rgba(113, 113, 122, 1)",
+                  }}
                 >
                   Top
                 </button>
@@ -389,8 +521,12 @@ export default function Home() {
           <Card
             className="overflow-hidden flex flex-col flex-1 min-h-0"
             style={{
-              background: "transparent",
-              border: "1px solid rgba(255, 255, 255, 0.16)",
+              background:
+                theme === "light" ? "rgba(255, 255, 255, 1)" : "transparent",
+              border:
+                theme === "dark"
+                  ? "1px solid rgba(255, 255, 255, 0.16)"
+                  : "1px solid rgba(228, 228, 231, 1)",
             }}
           >
             <CardContent
@@ -419,10 +555,16 @@ export default function Home() {
                   <div className="flex items-center justify-center h-full min-h-[400px]">
                     {/* Text Messages */}
                     <div className="text-center space-y-2">
-                      <h3 className="text-lg font-bold text-gray-300">
-                        No supporters yet
-                      </h3>
-                      <p className="text-sm text-gray-400 max-w-md mx-auto">
+                      <h3 className="text-lg font-bold">No supporters yet</h3>
+                      <p
+                        className="text-sm max-w-md mx-auto"
+                        style={{
+                          color:
+                            theme === "dark"
+                              ? "rgba(156, 163, 175, 1)"
+                              : "rgba(113, 113, 122, 1)",
+                        }}
+                      >
                         You can be the first supporter! Every contribution helps
                         this project move forward.
                       </p>
@@ -443,11 +585,19 @@ export default function Home() {
             borderBottom:
               theme === "dark"
                 ? "1px solid rgba(255, 255, 255, 0.16)"
-                : "1px solid rgba(9, 9, 11, 1)",
+                : "1px solid rgba(228, 228, 231, 1)",
           }}
         >
           <div>
-            <h1 className="text-2xl font-bold text-gray-50 text-nowrap">
+            <h1
+              className="text-2xl font-bold text-nowrap"
+              style={{
+                color:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 1)"
+                    : "rgba(9, 9, 11, 1)",
+              }}
+            >
               Support Our Community
             </h1>
             <p className="text-sm text-x402-muted">
@@ -460,7 +610,15 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8 space-y-6">
           {!connected ? (
             <div className="text-center space-y-4">
-              <h1 className="text-xl font-bold text-gray-50 mb-3">
+              <h1
+                className="text-xl font-bold mb-3"
+                style={{
+                  color:
+                    theme === "dark"
+                      ? "rgba(255, 255, 255, 1)"
+                      : "rgba(9, 9, 11, 1)",
+                }}
+              >
                 Connect Wallet
               </h1>
               <p className="text-sm text-gray-400">
@@ -489,18 +647,48 @@ export default function Home() {
                     className="w-10 h-10 rounded flex items-center justify-center"
                     style={{ background: "#744AC9" }}
                   >
-                    <span className="text-white text-xl">👤</span>
+                    <span
+                      className="text-xl"
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 1)"
+                            : "rgba(9, 9, 11, 1)",
+                      }}
+                    >
+                      👤
+                    </span>
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Connected Wallet</p>
-                    <p className="text-sm font-bold text-white">
+                    <p
+                      className="text-sm font-bold"
+                      style={{
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 1)"
+                            : "rgba(9, 9, 11, 1)",
+                      }}
+                    >
                       {publicKey ? formatAddress(publicKey.toString()) : ""}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => disconnect()}
-                  className="text-gray-400 hover:text-white text-sm"
+                  className="text-gray-400 text-sm"
+                  style={{
+                    color: "inherit",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color =
+                      theme === "dark"
+                        ? "rgba(255, 255, 255, 1)"
+                        : "rgba(9, 9, 11, 1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = "";
+                  }}
                 >
                   Disconnect
                 </button>
@@ -508,7 +696,15 @@ export default function Home() {
 
               {/* Amount Section */}
               <div className="space-y-3">
-                <label className="text-sm font-bold text-white block">
+                <label
+                  className="text-sm font-bold block"
+                  style={{
+                    color:
+                      theme === "dark"
+                        ? "rgba(255, 255, 255, 1)"
+                        : "rgba(9, 9, 11, 1)",
+                  }}
+                >
                   Amount
                 </label>
                 <div className="flex items-center gap-2">
@@ -521,8 +717,12 @@ export default function Home() {
                       setCustomAmount(e.target.value);
                       setSelectedQuickAmount(null);
                     }}
-                    className="flex-1 bg-transparent border-gray-600 text-white"
+                    className="flex-1 bg-transparent border-gray-600"
                     style={{
+                      color:
+                        theme === "dark"
+                          ? "rgba(255, 255, 255, 1)"
+                          : "rgba(9, 9, 11, 1)",
                       background:
                         theme === "dark"
                           ? "rgba(255, 255, 255, 0.06)"
@@ -533,7 +733,16 @@ export default function Home() {
                           : "1px solid rgba(0, 0, 0, 0.16)",
                     }}
                   />
-                  <span className="text-gray-400">USD</span>
+                  <span
+                    style={{
+                      color:
+                        theme === "dark"
+                          ? "rgba(156, 163, 175, 1)"
+                          : "rgba(9, 9, 11, 1)",
+                    }}
+                  >
+                    USD
+                  </span>
                 </div>
 
                 {/* Quick Donation Buttons */}
@@ -553,10 +762,15 @@ export default function Home() {
                       >
                         <button
                           onClick={() => handleQuickAmountSelect(amount)}
-                          className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                            isSelected ? "text-white" : "text-gray-400"
-                          }`}
+                          className="px-4 py-2 rounded-lg font-bold text-sm transition-all"
                           style={{
+                            color: isSelected
+                              ? theme === "dark"
+                                ? "rgba(255, 255, 255, 1)"
+                                : "rgba(9, 9, 11, 1)"
+                              : theme === "dark"
+                              ? "rgba(156, 163, 175, 1)"
+                              : "rgba(9, 9, 11, 1)",
                             background: isSelected
                               ? theme === "dark"
                                 ? "rgba(255, 255, 255, 0.1)"
@@ -580,7 +794,15 @@ export default function Home() {
                   })}
                 </div>
 
-                <p className="text-xs text-gray-400">
+                <p
+                  className="text-xs"
+                  style={{
+                    color:
+                      theme === "dark"
+                        ? "rgba(156, 163, 175, 1)"
+                        : "rgba(113, 113, 122, 1)",
+                  }}
+                >
                   You will get{" "}
                   {(
                     parseFloat(customAmount || "0") * dollarToTokenRatio
@@ -591,15 +813,27 @@ export default function Home() {
 
               {/* Your Name Section */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-white block">
+                <label
+                  className="text-sm font-bold block"
+                  style={{
+                    color:
+                      theme === "dark"
+                        ? "rgba(255, 255, 255, 1)"
+                        : "rgba(9, 9, 11, 1)",
+                  }}
+                >
                   Your Name (Optional)
                 </label>
                 <Input
                   value={donorName}
                   onChange={(e) => setDonorName(e.target.value)}
                   placeholder="e.g. CTKN"
-                  className="bg-transparent border-gray-600 text-white"
+                  className="bg-transparent border-gray-600"
                   style={{
+                    color:
+                      theme === "dark"
+                        ? "rgba(255, 255, 255, 1)"
+                        : "rgba(9, 9, 11, 1)",
                     background:
                       theme === "dark"
                         ? "rgba(255, 255, 255, 0.06)"
@@ -614,7 +848,15 @@ export default function Home() {
 
               {/* Message Section */}
               <div className="space-y-2">
-                <label className="text-sm font-bold text-white block">
+                <label
+                  className="text-sm font-bold block"
+                  style={{
+                    color:
+                      theme === "dark"
+                        ? "rgba(255, 255, 255, 1)"
+                        : "rgba(9, 9, 11, 1)",
+                  }}
+                >
                   Message (Optional)
                 </label>
                 <Textarea
@@ -622,8 +864,12 @@ export default function Home() {
                   onChange={(e) => setDonorMessage(e.target.value)}
                   placeholder="Describe your token"
                   rows={3}
-                  className="bg-transparent border-gray-600 text-white"
+                  className="bg-transparent border-gray-600"
                   style={{
+                    color:
+                      theme === "dark"
+                        ? "rgba(255, 255, 255, 1)"
+                        : "rgba(9, 9, 11, 1)",
                     background:
                       theme === "dark"
                         ? "rgba(255, 255, 255, 0.06)"
@@ -642,8 +888,12 @@ export default function Home() {
                 disabled={
                   isProcessing || !customAmount || parseFloat(customAmount) < 1
                 }
-                className="w-full text-white font-bold py-3 rounded-full"
+                className="w-full font-bold py-3 rounded-full"
                 style={{
+                  color:
+                    theme === "dark"
+                      ? "rgba(255, 255, 255, 1)"
+                      : "rgba(9, 9, 11, 1)",
                   background: "linear-gradient(to right, #744AC9, #22EBAD)",
                   border: "none",
                 }}
