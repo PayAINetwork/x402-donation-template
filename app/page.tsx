@@ -18,6 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { useX402Payment } from "@/hooks/use-x402-payment";
 import { Loader2, Send, TrendingUp, Users, Coins } from "lucide-react";
 import { DonationItem } from "@/components/donation-item";
+import { DonationSuccess } from "@/components/donation-success";
 
 interface DonationMessage {
   id: number;
@@ -203,31 +204,10 @@ export default function Home() {
                 <p className="text-sm text-x402-muted">${tokenSymbol}</p>
               </div>
             </div>
-            <WalletMultiButton />
           </div>
         </header>
 
         <div className="container mx-auto px-4 py-8 flex flex-col flex-1 min-h-0">
-          {/* Hero Section
-        <div className="text-center space-y-4">
-          <h2 className="text-4xl font-bold text-x402-cyan">
-            Support Our Community
-          </h2>
-          <p className="text-x402-text max-w-2xl mx-auto">
-            1. Donate to {tokenName} to get {tokenSymbol} tokens.
-          </p>
-          <p className="text-x402-text max-w-2xl mx-auto">
-            2. Write a message to the community with your {tokenSymbol} tokens.
-          </p>
-          <p className="text-x402-text max-w-2xl mx-auto">{tokenDescription}</p>
-          <p className="text-x402-muted">
-            Get{" "}
-            <span className="text-x402-cyan font-semibold">
-              {dollarToTokenRatio} {tokenSymbol}
-            </span>{" "}
-            tokens per $1 donated
-          </p>
-        </div> */}
           {/* Stats */}
           <div
             className="grid rounded-lg h-auto mb-8"
@@ -607,7 +587,13 @@ export default function Home() {
           </div>
           <div className="flex gap-2"></div>
         </header>
-        <div className="container mx-auto px-4 py-8 space-y-6">
+        <div
+          className="container mx-auto px-4 py-8 space-y-6"
+          style={{
+            background:
+              theme === "dark" ? "transparent" : "rgba(255, 255, 255, 1)",
+          }}
+        >
           {!connected ? (
             <div className="text-center space-y-4">
               <h1
