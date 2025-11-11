@@ -1,7 +1,11 @@
 /**
- * Launcher API client
- * Replaces local Postgres with centralized database in launcher
+ * Database operations for donations
+ * Users own their own Postgres database
  */
+
+import { db } from '@/db';
+import { donations } from '@/db/schema';
+import { desc, count, sql } from 'drizzle-orm';
 
 export interface DonationMessage {
     id: number;
@@ -13,16 +17,8 @@ export interface DonationMessage {
     created_at: Date;
 }
 
-const LAUNCHER_API_URL = process.env.LAUNCHER_API_URL || process.env.NEXT_PUBLIC_LAUNCHER_URL;
-const LAUNCHER_API_KEY = process.env.LAUNCHER_API_KEY;
-const TOKEN_MINT = process.env.NEXT_PUBLIC_TOKEN_MINT || process.env.TOKEN_MINT;
-
-if (!LAUNCHER_API_URL) {
-    console.warn('[DB] LAUNCHER_API_URL not configured - donations will not be recorded');
-}
-
 /**
- * Store a donation in the launcher's central database
+ * Store a donation in the user's own database
  */
 export async function storeDonation(
     donatorAddress: string,
@@ -32,45 +28,26 @@ export async function storeDonation(
     message?: string,
     transactionSignature?: string
 ): Promise<DonationMessage | null> {
-    if (!LAUNCHER_API_URL || !TOKEN_MINT) {
-        console.error('[DB] Cannot store donation - missing LAUNCHER_API_URL or TOKEN_MINT');
-        return null;
-    }
-
     try {
-        const response = await fetch(`${LAUNCHER_API_URL}/api/donations`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(LAUNCHER_API_KEY ? { 'X-API-Key': LAUNCHER_API_KEY } : {}),
-            },
-            body: JSON.stringify({
-                tokenMint: TOKEN_MINT,
-                donorAddress: donatorAddress,
-                donorName: name,
-                amountUsd,
-                tokensMinted,
-                message,
-                transactionSignature,
-            }),
-        });
-
-        if (!response.ok) {
-            console.error('[DB] Failed to store donation:', await response.text());
-            return null;
-        }
-
-        const result = await response.json();
-        
-        // Return a compatible format (even though ID might be different)
-        return {
-            id: result.donationId || 0,
-            donor_address: donatorAddress,
-            donor_name: name || null,
-            amount_usd: amountUsd,
-            tokens_minted: tokensMinted,
+        const result = await db.insert(donations).values({
+            donorAddress: donatorAddress,
+            donorName: name || null,
+            amountUsd: amountUsd.toString(),
+            tokensMinted,
             message: message || null,
-            created_at: new Date(),
+            transactionSignature: transactionSignature || null,
+        }).returning();
+
+        const donation = result[0];
+        
+        return {
+            id: donation.id,
+            donor_address: donation.donorAddress,
+            donor_name: donation.donorName,
+            amount_usd: parseFloat(donation.amountUsd),
+            tokens_minted: donation.tokensMinted,
+            message: donation.message,
+            created_at: donation.createdAt,
         };
     } catch (error) {
         console.error('[DB] Error storing donation:', error);
@@ -79,40 +56,49 @@ export async function storeDonation(
 }
 
 /**
- * Get paginated donations from launcher API
+ * Get paginated donations from user's own database
  */
 export async function getDonations(
     page: number = 1,
     limit: number = 50,
     sortBy: "recent" | "top" = "recent"
 ): Promise<{ donations: DonationMessage[]; total: number }> {
-    if (!LAUNCHER_API_URL || !TOKEN_MINT) {
-        console.error('[DB] Cannot fetch donations - missing LAUNCHER_API_URL or TOKEN_MINT');
-        return { donations: [], total: 0 };
-    }
-
     try {
-        const url = new URL(`${LAUNCHER_API_URL}/api/donations/${TOKEN_MINT}`);
-        url.searchParams.set('page', page.toString());
-        url.searchParams.set('limit', limit.toString());
-        url.searchParams.set('sort', sortBy);
+        const offset = (page - 1) * limit;
 
-        const response = await fetch(url.toString(), {
-            headers: {
-                ...(LAUNCHER_API_KEY ? { 'X-API-Key': LAUNCHER_API_KEY } : {}),
-            },
-        });
+        // Get total count
+        const countResult = await db.select({ count: count() }).from(donations);
+        const total = countResult[0].count;
 
-        if (!response.ok) {
-            console.error('[DB] Failed to fetch donations:', await response.text());
-            return { donations: [], total: 0 };
-        }
+        // Get donations with sorting
+        const donationsList = sortBy === "top"
+            ? await db
+                .select()
+                .from(donations)
+                .orderBy(desc(donations.amountUsd), desc(donations.createdAt))
+                .limit(limit)
+                .offset(offset)
+            : await db
+                .select()
+                .from(donations)
+                .orderBy(desc(donations.createdAt))
+                .limit(limit)
+                .offset(offset);
 
-        const result = await response.json();
-        
+        // Convert to DonationMessage format
+        const formattedDonations: DonationMessage[] = donationsList.map(d => ({
+            id: d.id,
+            donor_address: d.donorAddress,
+            donor_name: d.donorName,
+            amount_usd: parseFloat(d.amountUsd),
+            tokens_minted: d.tokensMinted,
+            message: d.message,
+            created_at: d.createdAt,
+        }));
+
         return {
-            donations: result.donations || [],
-            total: result.pagination?.total || 0,
+            donations: formattedDonations,
+            total,
         };
     } catch (error) {
         console.error('[DB] Error fetching donations:', error);
@@ -121,37 +107,26 @@ export async function getDonations(
 }
 
 /**
- * Get donation stats from launcher API
+ * Get donation stats from user's own database
  */
 export async function getDonationStats(): Promise<{
     totalDonations: number;
     totalAmount: number;
     totalTokens: number;
 }> {
-    if (!LAUNCHER_API_URL || !TOKEN_MINT) {
-        console.error('[DB] Cannot fetch stats - missing LAUNCHER_API_URL or TOKEN_MINT');
-        return { totalDonations: 0, totalAmount: 0, totalTokens: 0 };
-    }
-
     try {
-        const url = `${LAUNCHER_API_URL}/api/donations/${TOKEN_MINT}`;
-        const response = await fetch(url, {
-            headers: {
-                ...(LAUNCHER_API_KEY ? { 'X-API-Key': LAUNCHER_API_KEY } : {}),
-            },
-        });
+        const statsResult = await db
+            .select({
+                totalDonations: count(),
+                totalAmount: sql<string>`COALESCE(SUM(${donations.amountUsd}), 0)`,
+                totalTokens: sql<number>`COALESCE(SUM(${donations.tokensMinted}), 0)`,
+            })
+            .from(donations);
 
-        if (!response.ok) {
-            console.error('[DB] Failed to fetch stats:', await response.text());
-            return { totalDonations: 0, totalAmount: 0, totalTokens: 0 };
-        }
-
-        const result = await response.json();
-        
         return {
-            totalDonations: result.stats?.totalDonations || 0,
-            totalAmount: result.stats?.totalAmount || 0,
-            totalTokens: result.stats?.totalTokens || 0,
+            totalDonations: statsResult[0].totalDonations,
+            totalAmount: parseFloat(statsResult[0].totalAmount),
+            totalTokens: statsResult[0].totalTokens,
         };
     } catch (error) {
         console.error('[DB] Error fetching stats:', error);
