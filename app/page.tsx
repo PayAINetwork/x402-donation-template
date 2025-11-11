@@ -813,7 +813,7 @@ export default function Home() {
                 <Input
                   value={donorName}
                   onChange={(e) => setDonorName(e.target.value)}
-                  placeholder="e.g. CTKN"
+                  placeholder="e.g. Bob"
                   className="bg-transparent border-gray-600"
                   style={{
                     color:
@@ -848,7 +848,7 @@ export default function Home() {
                 <Textarea
                   value={donorMessage}
                   onChange={(e) => setDonorMessage(e.target.value)}
-                  placeholder="Describe your token"
+                  placeholder="Ex: I love your project!"
                   rows={3}
                   className="bg-transparent border-gray-600"
                   style={{
