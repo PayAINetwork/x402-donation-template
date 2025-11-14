@@ -140,6 +140,10 @@ FACILITATOR_URL=https://facilitator.payai.network
 LAUNCHER_API_URL=https://launcher.payai.network
 ```
 
+### Database Configuration
+
+This template connects to **Vercel Postgres (Neon)** both locally and in production. Vercel deployments automatically expose `POSTGRES_URL` and `POSTGRES_URL_NON_POOLING`. For local development, point `POSTGRES_URL` or `DATABASE_URL` in your `.env.local` file at a Neon connection string so `drizzle-kit` commands and the app can reach the same database.
+
 ### Local Development
 
 1. **Clone the repository:**
