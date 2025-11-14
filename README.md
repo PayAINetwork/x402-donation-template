@@ -142,30 +142,34 @@ LAUNCHER_API_URL=https://launcher.payai.network
 
 ### Database Configuration
 
-This template connects to **Vercel Postgres (Neon)** both locally and in production. Vercel deployments automatically expose `POSTGRES_URL` and `POSTGRES_URL_NON_POOLING`. For local development, point `POSTGRES_URL` or `DATABASE_URL` in your `.env.local` file at a Neon connection string so `drizzle-kit` commands and the app can reach the same database.
+This template connects to **Vercel Storage (Neon Postgres)** both locally and in production. Vercel deployments expose a pooled `STORAGE_URL`, and you can optionally add `STORAGE_URL_NON_POOLING` (or the legacy `POSTGRES_URL(_NON_POOLING)`) if you want a dedicated serverless connection string. The runtime and drizzle tooling look for `STORAGE_URL_NON_POOLING`, `STORAGE_URL`, `POSTGRES_URL_NON_POOLING`, `POSTGRES_URL`, then `DATABASE_URL`. For local development, set at least `STORAGE_URL` or `DATABASE_URL` in `.env.local` so drizzle-kit commands and the app can share the same Neon instance.
 
 ### Local Development
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/postmanode/x402-donation-template.git
    cd x402-donation-template
    ```
 
 2. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
 
 3. **Set up environment variables:**
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your values
    ```
 
 4. **Run the development server:**
+
    ```bash
-pnpm dev
+   pnpm dev
    ```
 
 5. **Open http://localhost:3000** in your browser
@@ -183,11 +187,13 @@ pnpm dev
 #### Option 2: Manual Deploy
 
 1. **Push to GitHub:**
+
    ```bash
    git push origin main
    ```
 
 2. **Import to Vercel:**
+
    - Go to [vercel.com/new](https://vercel.com/new)
    - Import your GitHub repository
    - Configure environment variables
@@ -219,22 +225,43 @@ Edit `middleware.ts` to change preset donation amounts:
 
 ```typescript
 export const middleware = paymentMiddleware(
-    resourceWallet,
-    {
-        '/api/donate/1': { price: '$1', network, config: { description: 'Donate $1' } },
-        '/api/donate/5': { price: '$5', network, config: { description: 'Donate $5' } },
-        '/api/donate/10': { price: '$10', network, config: { description: 'Donate $10' } },
-        // Add more preset amounts:
-        '/api/donate/25': { price: '$25', network, config: { description: 'Donate $25' } },
-        '/api/donate/50': { price: '$50', network, config: { description: 'Donate $50' } },
+  resourceWallet,
+  {
+    "/api/donate/1": {
+      price: "$1",
+      network,
+      config: { description: "Donate $1" },
     },
-    // ...
+    "/api/donate/5": {
+      price: "$5",
+      network,
+      config: { description: "Donate $5" },
+    },
+    "/api/donate/10": {
+      price: "$10",
+      network,
+      config: { description: "Donate $10" },
+    },
+    // Add more preset amounts:
+    "/api/donate/25": {
+      price: "$25",
+      network,
+      config: { description: "Donate $25" },
+    },
+    "/api/donate/50": {
+      price: "$50",
+      network,
+      config: { description: "Donate $50" },
+    },
+  }
+  // ...
 );
 ```
 
 ### Switching to Mainnet
 
 1. Update environment variables:
+
    ```bash
    NEXT_PUBLIC_SOLANA_NETWORK=solana
    ```
@@ -260,6 +287,7 @@ export const middleware = paymentMiddleware(
 ### Branding
 
 Update token branding via environment variables:
+
 - `TOKEN_NAME` - Display name
 - `TOKEN_SYMBOL` - Ticker symbol
 - `TOKEN_IMAGE_URL` - Logo URL (IPFS recommended)
@@ -270,12 +298,12 @@ Update token branding via environment variables:
 Edit `app/globals.css` to customize colors:
 
 ```css
---color-x402-bg: #0a1f1f;        /* Background */
---color-x402-card: #0f2828;      /* Card background */
---color-x402-border: #1a3535;    /* Borders */
---color-x402-text: #e0f2f2;      /* Text */
---color-x402-muted: #7a9999;     /* Muted text */
---color-x402-cyan: #00ffff;      /* Primary accent */
+--color-x402-bg: #0a1f1f; /* Background */
+--color-x402-card: #0f2828; /* Card background */
+--color-x402-border: #1a3535; /* Borders */
+--color-x402-text: #e0f2f2; /* Text */
+--color-x402-muted: #7a9999; /* Muted text */
+--color-x402-cyan: #00ffff; /* Primary accent */
 --color-x402-cyan-hover: #00dddd; /* Hover state */
 ```
 
@@ -294,11 +322,13 @@ Edit `app/globals.css` to customize colors:
 Retrieve paginated donation messages.
 
 **Query Parameters:**
+
 - `page` (number, default: 1) - Page number
 - `limit` (number, default: 50, max: 100) - Items per page
 - `sort` (`recent` | `top`, default: `recent`) - Sort order
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -307,7 +337,7 @@ Retrieve paginated donation messages.
       {
         "id": 1,
         "donator_address": "ABC...XYZ",
-        "amount_usd": 10.50,
+        "amount_usd": 10.5,
         "tokens_minted": 10500,
         "name": "John Doe",
         "message": "To the moon!",
@@ -322,7 +352,7 @@ Retrieve paginated donation messages.
     },
     "stats": {
       "totalDonations": 150,
-      "totalAmount": 1250.50,
+      "totalAmount": 1250.5,
       "totalTokens": 1250500
     }
   }
@@ -336,6 +366,7 @@ Make a quick donation (protected by x402).
 **Protected by:** x402 payment middleware
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -355,9 +386,10 @@ Make a quick donation (protected by x402).
 Custom donation with optional message (protected by x402).
 
 **Request Body:**
+
 ```json
 {
-  "amount": 25.50,
+  "amount": 25.5,
   "name": "John Doe",
   "message": "Great project!"
 }
