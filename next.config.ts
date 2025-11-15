@@ -11,9 +11,23 @@ const nextConfig: NextConfig = {
     };
 
     // Also suppress the specific warning if any loaders still surface it
-    const prettyWarningFilter = (warning: any) => {
-      const message = typeof warning === "string" ? warning : warning?.message || "";
-      return message.includes("Can't resolve 'pino-pretty'");
+    const prettyWarningFilter = (warning: unknown) => {
+      if (typeof warning === "string") {
+        return warning.includes("Can't resolve 'pino-pretty'");
+      }
+
+      if (
+        warning &&
+        typeof warning === "object" &&
+        "message" in warning &&
+        typeof (warning as { message?: unknown }).message === "string"
+      ) {
+        return (warning as { message: string }).message.includes(
+          "Can't resolve 'pino-pretty'"
+        );
+      }
+
+      return false;
     };
 
     // Preserve existing ignoreWarnings while adding our filter

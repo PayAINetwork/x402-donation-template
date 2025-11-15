@@ -1,19 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTokenConfig, calculateTokensForDonation, transferTokens } from "@/lib/token";
+import {
+  getTokenConfig,
+  calculateTokensForDonation,
+  transferTokens,
+} from "@/lib/token";
 import { storeDonation } from "@/lib/db";
 
 export interface WriteMessageRequest {
   amount: number; // USD amount (minimum $1)
-  name?: string;  // Optional donor name
+  name?: string; // Optional donor name
   message?: string; // Optional message
 }
 
 /**
  * POST /api/write-message
- * 
+ *
  * Donate custom amount with optional name and message
  * Protected by x402 middleware - requires minimum $1 payment
- * 
+ *
  * Body:
  * {
  *   "amount": 25.50,        // USD amount
@@ -34,9 +38,11 @@ export async function POST(request: NextRequest) {
 
     let payerAddress: string;
     try {
-      const decoded = JSON.parse(Buffer.from(paymentResponse, "base64").toString());
+      const decoded = JSON.parse(
+        Buffer.from(paymentResponse, "base64").toString()
+      );
       payerAddress = decoded.payer;
-    } catch (error) {
+    } catch {
       return NextResponse.json(
         { success: false, error: "Invalid payment response" },
         { status: 500 }
@@ -44,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse request body
-    const body = await request.json() as WriteMessageRequest;
+    const body = (await request.json()) as WriteMessageRequest;
     const { amount, name, message } = body;
 
     // Validate amount
@@ -57,10 +63,13 @@ export async function POST(request: NextRequest) {
 
     // Get token configuration
     const tokenConfig = getTokenConfig();
-    
+
     // Calculate tokens to mint
-    const tokensToMint = calculateTokensForDonation(amount, tokenConfig.dollarToTokenRatio);
-    
+    const tokensToMint = calculateTokensForDonation(
+      amount,
+      tokenConfig.dollarToTokenRatio
+    );
+
     if (tokensToMint <= 0) {
       return NextResponse.json(
         { success: false, error: "Invalid donation amount" },
@@ -72,11 +81,20 @@ export async function POST(request: NextRequest) {
     const signature = await transferTokens(payerAddress, tokensToMint);
 
     // Store donation record with message in launcher database
-    await storeDonation(payerAddress, amount, tokensToMint, name, message, signature);
+    await storeDonation(
+      payerAddress,
+      amount,
+      tokensToMint,
+      name,
+      message,
+      signature
+    );
 
     return NextResponse.json({
       success: true,
-      message: `Thank you${name ? `, ${name},` : ""} for your $${amount} donation!`,
+      message: `Thank you${
+        name ? `, ${name},` : ""
+      } for your $${amount} donation!`,
       data: {
         donator: payerAddress,
         amountUsd: amount,
@@ -92,10 +110,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Failed to process donation"
+        error:
+          error instanceof Error ? error.message : "Failed to process donation",
       },
       { status: 500 }
     );
   }
 }
-

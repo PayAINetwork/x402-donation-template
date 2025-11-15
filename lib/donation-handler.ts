@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTokenConfig, calculateTokensForDonation, transferTokens } from "./token";
+import {
+  getTokenConfig,
+  calculateTokensForDonation,
+  transferTokens,
+} from "./token";
 import { storeDonation } from "./db";
 
 export interface DonationHandlerOptions {
@@ -28,9 +32,11 @@ export async function handleDonation(
 
     let payerAddress: string;
     try {
-      const decoded = JSON.parse(Buffer.from(paymentResponse, "base64").toString());
+      const decoded = JSON.parse(
+        Buffer.from(paymentResponse, "base64").toString()
+      );
       payerAddress = decoded.payer;
-    } catch (error) {
+    } catch {
       return NextResponse.json(
         { success: false, error: "Invalid payment response" },
         { status: 500 }
@@ -39,10 +45,13 @@ export async function handleDonation(
 
     // Get token configuration
     const tokenConfig = getTokenConfig();
-    
+
     // Calculate tokens to mint
-    const tokensToMint = calculateTokensForDonation(amountUsd, tokenConfig.dollarToTokenRatio);
-    
+    const tokensToMint = calculateTokensForDonation(
+      amountUsd,
+      tokenConfig.dollarToTokenRatio
+    );
+
     if (tokensToMint <= 0) {
       return NextResponse.json(
         { success: false, error: "Invalid donation amount" },
@@ -54,7 +63,14 @@ export async function handleDonation(
     const signature = await transferTokens(payerAddress, tokensToMint);
 
     // Store donation record in launcher database
-    await storeDonation(payerAddress, amountUsd, tokensToMint, undefined, undefined, signature);
+    await storeDonation(
+      payerAddress,
+      amountUsd,
+      tokensToMint,
+      undefined,
+      undefined,
+      signature
+    );
 
     return NextResponse.json({
       success: true,
@@ -72,10 +88,10 @@ export async function handleDonation(
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Failed to process donation"
+        error:
+          error instanceof Error ? error.message : "Failed to process donation",
       },
       { status: 500 }
     );
   }
 }
-
