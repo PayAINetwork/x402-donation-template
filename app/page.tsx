@@ -288,7 +288,7 @@ export default function Home() {
               >
                 Amount
               </label>
-              <div className="flex items-center gap-2">
+              <div className="relative">
                 <Input
                   type="number"
                   min="1"
@@ -300,6 +300,7 @@ export default function Home() {
                   }}
                   className="flex-1 bg-transparent border-gray-600"
                   style={{
+                    paddingRight: "56px",
                     color:
                       theme === "dark"
                         ? "rgba(255, 255, 255, 1)"
@@ -316,13 +317,20 @@ export default function Home() {
                 />
                 <span
                   style={{
+                    position: "absolute",
+                    right: "16px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
                     color:
                       theme === "dark"
                         ? "rgba(156, 163, 175, 1)"
-                        : "rgba(9, 9, 11, 1)",
+                        : "rgba(113, 113, 122, 1)",
+                    pointerEvents: "none",
                   }}
                 >
-                  USD
+                  USDC
                 </span>
               </div>
 
@@ -336,8 +344,10 @@ export default function Home() {
                       style={{
                         padding: "1px",
                         background: isSelected
-                          ? "linear-gradient(to right, #744AC9, #22EBAD)"
-                          : "transparent",
+                          ? "linear-gradient(88.41deg, #744AC9 -3.85%, #22EBAD 111.06%)"
+                          : theme === "dark"
+                          ? "rgba(255, 255, 255, 0.08)"
+                          : "rgba(0, 0, 0, 0.08)",
                         borderRadius: "0.5rem",
                       }}
                     >
@@ -352,18 +362,11 @@ export default function Home() {
                             : theme === "dark"
                             ? "rgba(156, 163, 175, 1)"
                             : "rgba(9, 9, 11, 1)",
-                          background: isSelected
-                            ? theme === "dark"
-                              ? "rgba(255, 255, 255, 0.1)"
-                              : "rgba(0, 0, 0, 0.1)"
-                            : theme === "dark"
-                            ? "rgba(255, 255, 255, 0.06)"
-                            : "rgba(0, 0, 0, 0.06)",
-                          border: isSelected
-                            ? "none"
-                            : theme === "dark"
-                            ? "1px solid rgba(255, 255, 255, 0.16)"
-                            : "1px solid rgba(0, 0, 0, 0.16)",
+                          background:
+                            theme === "dark"
+                              ? "rgba(15, 15, 15, 0.95)"
+                              : "rgba(255, 255, 255, 1)",
+                          border: "1px solid transparent",
                           width: "100%",
                           height: "100%",
                         }}
