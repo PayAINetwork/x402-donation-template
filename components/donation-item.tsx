@@ -5,20 +5,18 @@ interface DonationItemProps {
   donor_address: string;
   donor_name: string | null;
   amount_usd: number;
-  tokens_minted: number;
+  currency?: string;
   message: string | null;
   created_at: string;
-  tokenSymbol: string;
   theme?: "dark" | "light";
 }
 
 export function DonationItem({
   donor_name,
   amount_usd,
-  tokens_minted,
+  currency = "USDC",
   message,
   created_at,
-  tokenSymbol,
   theme = "dark",
 }: DonationItemProps) {
   const formatTimeAgo = (dateString: string) => {
@@ -31,10 +29,6 @@ export function DonationItem({
     if (diffInSeconds < 86400)
       return `${Math.floor(diffInSeconds / 3600)}h ago`;
     return `${Math.floor(diffInSeconds / 86400)}d ago`;
-  };
-
-  const formatTokens = (tokens: number) => {
-    return tokens.toLocaleString().replace(/,/g, ".");
   };
 
   const isAnonymous = !donor_name;
@@ -123,19 +117,7 @@ export function DonationItem({
                   : "rgba(22, 163, 74, 1)",
             }}
           >
-            ${amount_usd} USDC
-          </span>
-          <span className="text-gray-400 mx-2">|</span>
-          <span className="text-gray-400">Tokens Received: </span>
-          <span
-            style={{
-              color:
-                theme === "dark"
-                  ? "rgba(255, 255, 255, 0.8)"
-                  : "rgba(9, 9, 11, 0.8)",
-            }}
-          >
-            {formatTokens(tokens_minted)} {tokenSymbol}
+            ${amount_usd} {currency}
           </span>
         </p>
       </div>

@@ -1,9 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getTokenConfig,
-  calculateTokensForDonation,
-  transferTokens,
-} from "@/lib/token";
 import { storeDonation } from "@/lib/db";
 
 export interface WriteMessageRequest {
@@ -37,11 +32,13 @@ export async function POST(request: NextRequest) {
     }
 
     let payerAddress: string;
+    let transactionSignature: string | null = null;
     try {
       const decoded = JSON.parse(
         Buffer.from(paymentResponse, "base64").toString()
       );
       payerAddress = decoded.payer;
+      transactionSignature = decoded.transaction || null;
     } catch {
       return NextResponse.json(
         { success: false, error: "Invalid payment response" },
@@ -61,33 +58,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get token configuration
-    const tokenConfig = getTokenConfig();
-
-    // Calculate tokens to mint
-    const tokensToMint = calculateTokensForDonation(
-      amount,
-      tokenConfig.dollarToTokenRatio
-    );
-
-    if (tokensToMint <= 0) {
-      return NextResponse.json(
-        { success: false, error: "Invalid donation amount" },
-        { status: 400 }
-      );
-    }
-
-    // Transfer tokens to donor
-    const signature = await transferTokens(payerAddress, tokensToMint);
-
     // Store donation record with message in launcher database
-    await storeDonation(
+    const donation = await storeDonation(
       payerAddress,
       amount,
-      tokensToMint,
       name,
       message,
-      signature
+      transactionSignature || undefined
     );
 
     return NextResponse.json({
@@ -98,9 +75,8 @@ export async function POST(request: NextRequest) {
       data: {
         donator: payerAddress,
         amountUsd: amount,
-        tokensMinted: tokensToMint,
-        tokenSymbol: tokenConfig.symbol,
-        transactionSignature: signature,
+        currency: donation?.currency || "USDC",
+        transactionSignature: transactionSignature,
         name: name || null,
         message: message || null,
       },

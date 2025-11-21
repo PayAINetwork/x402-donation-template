@@ -1,74 +1,74 @@
-# x402 Donation Template
+# x402 Donation Template (No Token)
 
-A Next.js template for creating community donation portals for Solana tokens with x402 payment integration. Users can donate USDC and receive your token in return, with all donations recorded on-chain and displayed on a community message board.
+A Next.js template for creating a paid community message board with x402 payment integration. Users can write messages by paying with $PAYAI tokens, with all contributions recorded on-chain and displayed on a community board.
 
-> **💡 Recommended**: Deploy this template via the [x402 Merchant Launcher](https://github.com/postmanode/x402-merchant-launcher) for automatic token creation, configuration, and one-click setup. Or follow the manual setup instructions below.
+> **💡 Recommended**: Deploy this template via the [x402 Merchant Launcher](https://github.com/postmanode/x402-merchant-launcher) by selecting "No Token (Donations Only)" option for automatic configuration and one-click setup.
+
+> **🪙 Looking for the token version?** Check out [x402-donation-with-token-template](https://github.com/PayAINetwork/x402-donation-with-token-template) to mint and distribute your own tokens.
 
 ## 📖 Overview
 
 ### What is this?
 
-This is a **community donation portal** that allows anyone to support your token project by making USDC donations and receiving your tokens in return. Think of it as a combination of:
+This is a **paid community message board** that allows supporters to leave messages on your project's wall by paying with $PAYAI tokens. Think of it as a combination of:
 
-- 💰 **Token Faucet** - Distribute tokens to supporters
-- 💬 **Guestbook** - Community members can leave messages
-- 📊 **Leaderboard** - Track top donors and total raised
+- 💬 **Paid Guestbook** - Community members pay to leave messages
+- 📊 **Public Board** - All messages displayed in real-time
 - 🔐 **Payment Processor** - Seamless crypto payments via x402
+- 📈 **Stats Dashboard** - Track total contributors and messages
 
 ### How it works
 
-1. **Token Creator** (you) uses [x402 Merchant Launcher](https://github.com/postmanode/x402-merchant-launcher) to create a token and deploy this template
+1. **Project Creator** (you) uses [x402 Merchant Launcher](https://github.com/postmanode/x402-merchant-launcher) and selects "No Token" option
 2. **Merchant Server** goes live on Vercel and is automatically discoverable on [x402scan.com](https://x402scan.com)
-3. **Community Members** visit your donation portal and contribute USDC
-4. **Server** automatically distributes tokens from your allocation to donors
-5. **Community Board** displays all donations, messages, and donor names in real-time
+3. **Community Members** visit your message board and write messages by paying with $PAYAI
+4. **Community Board** displays all messages and contributor names in real-time
 
 ### Why use this?
 
-- ✅ **No smart contracts required** - Just deploy to Vercel
+- ✅ **No token creation needed** - Use existing $PAYAI token
+- ✅ **Simple setup** - Just project name and description
 - ✅ **x402 protocol compliant** - Auto-discoverable, standard payments
-- ✅ **Community engagement** - Donors can leave messages and see the community
-- ✅ **Flexible pricing** - You set how many tokens per dollar
+- ✅ **Community engagement** - Let supporters share their thoughts
 - ✅ **Zero maintenance** - Serverless architecture, auto-scaling
-- ✅ **Transparent** - All donations recorded on Solana blockchain
-- ✅ **No database setup** - Uses centralized launcher database
+- ✅ **Transparent** - All contributions recorded on Solana blockchain
+- ✅ **Built-in database** - Messages stored automatically
 
 ### Example Use Cases
 
-- 🚀 **Token Launch** - Distribute initial supply to early supporters
-- 💎 **Community Building** - Reward active community members
-- 🎁 **Fundraising** - Raise capital while distributing tokens
-- 🏆 **Contributor Rewards** - Thank contributors with tokens + recognition
-- 📣 **Marketing** - Let supporters leave messages promoting your project
+- 💬 **Community Feedback** - Let supporters share ideas and thoughts
+- 🎉 **Event Guestbook** - Collect messages from event attendees
+- 💝 **Support Wall** - Give fans a way to show appreciation
+- 📣 **Announcement Board** - Community-driven message sharing
+- 🏆 **Recognition Wall** - Acknowledge contributors publicly
 
 ## 🚀 Quick Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/postmanode/x402-donation-template)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/PayAINetwork/x402-donation-template)
 
 ## ✨ Features
 
-- 💰 **x402 Payment Protocol** - Seamless USDC donations with automatic token distribution
-- 🎁 **Quick Donate Buttons** - Preset amounts ($1, $5, $10)
-- 💬 **Custom Donations** - Donors can leave messages and their name
-- 📊 **Community Board** - Public feed of all donations and messages
-- 📈 **Stats Dashboard** - Track total donors, amount raised, and tokens distributed
+- 💬 **x402 Payment Protocol** - Pay with $PAYAI tokens to write messages
+- ✍️ **Custom Messages** - Contributors can leave messages and their name
+- 📊 **Community Board** - Public feed of all messages and contributors
+- 📈 **Stats Dashboard** - Track total messages and contributors
 - 🔐 **Wallet Integration** - Phantom, Solflare, and more via Solana Wallet Adapter
-- 🎨 **Modern UI** - Beautiful dark theme with cyan accents (x402 style)
-- ⚡ **Built with Next.js 16** - Server components, API routes, and TypeScript
-- 🗄️ **Centralized Database** - Donations stored in launcher's database (no setup needed)
+- 🎨 **Modern UI** - Beautiful dark/light theme with responsive design
+- ⚡ **Built with Next.js 15** - Server components, API routes, and TypeScript
+- 🗄️ **Integrated Database** - Messages stored automatically via Vercel Postgres
 
 ## 🏗️ Architecture
 
-### Donation Flow
+### Message Flow
 
 ```
 1. User connects wallet (Phantom, Solflare, etc.)
-2. User selects donation amount ($1, $5, $10, or custom)
-3. x402 middleware verifies payment with PayAI facilitator
-4. Payment settles on-chain (USDC transferred to resource wallet)
-5. Server mints tokens from resource wallet to donor
-6. Donation message saved to launcher database (via API)
-7. User receives tokens + confirmation
+2. User enters custom amount of $PAYAI tokens
+3. User writes optional name and message
+4. x402 middleware verifies payment with PayAI facilitator
+5. Payment settles on-chain ($PAYAI transferred to project wallet)
+6. Message saved to database
+7. User receives confirmation
 8. Community board updates with new message
 ```
 
@@ -76,14 +76,11 @@ This is a **community donation portal** that allows anyone to support your token
 
 #### Protected Endpoints (require x402 payment)
 
-- `POST /api/donate/1` - Donate $1 USDC
-- `POST /api/donate/5` - Donate $5 USDC
-- `POST /api/donate/10` - Donate $10 USDC
-- `POST /api/write-message` - Custom donation with optional name/message
+- `POST /api/write-message` - Write a message on the community board (requires $PAYAI payment)
 
 #### Public Endpoints
 
-- `GET /api/messages` - Retrieve donation messages (paginated, sortable)
+- `GET /api/messages` - Retrieve messages (paginated, sortable)
   - Query params: `?page=1&limit=50&sort=recent|top`
 - `GET /.well-known/x402.json` - x402 protocol schema
 
@@ -100,31 +97,17 @@ This is a **community donation portal** that allows anyone to support your token
 
 Create a `.env.local` file:
 
+### Environment Variables
+
+Create a `.env.local` file:
+
 ```bash
-# Token Configuration (server-side - for token distribution)
-TOKEN_MINT=<your_token_mint_address>
-TOKEN_NAME=<your_token_name>
-TOKEN_SYMBOL=<your_token_symbol>
-TOTAL_SUPPLY=<your_total_supply>
-MINTABLE_SUPPLY=<amount_allocated_for_donations>
-TOKEN_IMAGE_URL=<your_token_image_ipfs_url>
-TOKEN_DESCRIPTION=<your_token_description>
+# Project Configuration
+NEXT_PUBLIC_PROJECT_NAME=<your_project_name>
+NEXT_PUBLIC_PROJECT_DESCRIPTION=<your_project_description>
 
-# Frontend Token Configuration (client-side - for display purposes)
-NEXT_PUBLIC_TOKEN_NAME=<your_token_name>
-NEXT_PUBLIC_TOKEN_SYMBOL=<your_token_symbol>
-NEXT_PUBLIC_TOKEN_IMAGE_URL=<your_token_image_ipfs_url>
-NEXT_PUBLIC_TOKEN_DESCRIPTION=<your_token_description>
-NEXT_PUBLIC_MINTABLE_SUPPLY=<amount_allocated_for_donations>
-
-# Donation Settings
-DONATION_TARGET=1000  # Target amount in USD to raise (e.g., 1000 = $1000)
-NEXT_PUBLIC_DONATION_TARGET=1000  # Same value for frontend display
-# Note: DOLLAR_TO_TOKEN_RATIO is calculated as MINTABLE_SUPPLY / DONATION_TARGET
-
-# Resource Server Wallet (holds tokens for distribution)
+# Resource Server Wallet (receives $PAYAI payments)
 RESOURCE_SERVER_WALLET_ADDRESS=<your_solana_address>
-RESOURCE_SERVER_WALLET_PRIVATE_KEY=<your_base58_private_key>
 
 # Solana Network
 NEXT_PUBLIC_SOLANA_NETWORK=solana-devnet  # or 'solana' for mainnet
@@ -136,8 +119,8 @@ SOLANA_COMMITMENT=confirmed
 # PayAI Facilitator
 FACILITATOR_URL=https://facilitator.payai.network
 
-# Launcher API (for storing donations - auto-set when deployed via launcher)
-LAUNCHER_API_URL=https://launcher.payai.network
+# PayAI Token (for write-on-wall payments)
+NEXT_PUBLIC_PAYAI_TOKEN_MINT=<payai_token_mint_address>
 ```
 
 ### Database Configuration
@@ -197,7 +180,6 @@ This template connects to **Vercel Storage (Neon Postgres)** both locally and in
    - Go to [vercel.com/new](https://vercel.com/new)
    - Import your GitHub repository
    - Configure environment variables
-   - Deploy
 
 3. **Deploy x402 schema:**
    - Your site is now live at `your-project.vercel.app`
@@ -205,58 +187,9 @@ This template connects to **Vercel Storage (Neon Postgres)** both locally and in
 
 ## 🔧 Configuration
 
-### Adjusting Token Distribution
+### Customizing Payment Amount
 
-Edit `DONATION_TARGET` in your environment variables to control the token-to-dollar ratio:
-
-```bash
-# Examples (assuming 1,000,000 MINTABLE_SUPPLY):
-DONATION_TARGET=1000    # Ratio: 1000 tokens per $1 (1,000,000 / 1,000)
-DONATION_TARGET=100     # Ratio: 10,000 tokens per $1 (1,000,000 / 100)
-DONATION_TARGET=10000   # Ratio: 100 tokens per $1 (1,000,000 / 10,000)
-
-# The DOLLAR_TO_TOKEN_RATIO is automatically calculated as:
-# DOLLAR_TO_TOKEN_RATIO = MINTABLE_SUPPLY / DONATION_TARGET
-```
-
-### Customizing Donation Amounts
-
-Edit `middleware.ts` to change preset donation amounts:
-
-```typescript
-export const middleware = paymentMiddleware(
-  resourceWallet,
-  {
-    "/api/donate/1": {
-      price: "$1",
-      network,
-      config: { description: "Donate $1" },
-    },
-    "/api/donate/5": {
-      price: "$5",
-      network,
-      config: { description: "Donate $5" },
-    },
-    "/api/donate/10": {
-      price: "$10",
-      network,
-      config: { description: "Donate $10" },
-    },
-    // Add more preset amounts:
-    "/api/donate/25": {
-      price: "$25",
-      network,
-      config: { description: "Donate $25" },
-    },
-    "/api/donate/50": {
-      price: "$50",
-      network,
-      config: { description: "Donate $50" },
-    },
-  }
-  // ...
-);
-```
+Users can enter a custom amount of $PAYAI tokens to write on the wall. The amount is flexible and determined by the user at the time of writing their message.
 
 ### Switching to Mainnet
 
@@ -264,6 +197,7 @@ export const middleware = paymentMiddleware(
 
    ```bash
    NEXT_PUBLIC_SOLANA_NETWORK=solana
+   NEXT_PUBLIC_PAYAI_TOKEN_MINT=<mainnet_payai_token_address>
    ```
 
 2. Ensure you have mainnet USDC and SOL in your resource wallet
@@ -319,7 +253,7 @@ Edit `app/globals.css` to customize colors:
 
 ### GET /api/messages
 
-Retrieve paginated donation messages.
+Retrieve paginated messages.
 
 **Query Parameters:**
 
@@ -336,11 +270,11 @@ Retrieve paginated donation messages.
     "donations": [
       {
         "id": 1,
-        "donator_address": "ABC...XYZ",
-        "amount_usd": 10.5,
-        "tokens_minted": 10500,
-        "name": "John Doe",
-        "message": "To the moon!",
+        "donor_address": "ABC...XYZ",
+        "donor_name": "John Doe",
+        "amount_usd": 0,
+        "tokens_minted": 0,
+        "message": "Great project! Keep building!",
         "created_at": "2025-01-15T10:30:00Z"
       }
     ],
@@ -352,50 +286,43 @@ Retrieve paginated donation messages.
     },
     "stats": {
       "totalDonations": 150,
-      "totalAmount": 1250.5,
-      "totalTokens": 1250500
+      "totalAmount": 0,
+      "totalTokens": 0
     }
-  }
-}
-```
-
-### POST /api/donate/[amount]
-
-Make a quick donation (protected by x402).
-
-**Protected by:** x402 payment middleware
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "message": "Thank you for your $10 donation!",
-  "data": {
-    "donator": "ABC...XYZ",
-    "amountUsd": 10,
-    "tokensMinted": 10000,
-    "tokenSymbol": "TOKEN",
-    "transactionSignature": "5x..."
   }
 }
 ```
 
 ### POST /api/write-message
 
-Custom donation with optional message (protected by x402).
+Write a message on the community board (protected by x402).
+
+**Protected by:** x402 payment middleware (requires $PAYAI payment)
 
 **Request Body:**
 
 ```json
 {
-  "amount": 25.5,
+  "amount": 100,
   "name": "John Doe",
   "message": "Great project!"
 }
 ```
 
-**Response:** Same as `/api/donate/[amount]`
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Thank you, John Doe, for your message!",
+  "data": {
+    "contributor": "ABC...XYZ",
+    "amountPayAI": 100,
+    "name": "John Doe",
+    "message": "Great project!"
+  }
+}
+```
 
 ## 🤝 Contributing
 
@@ -407,6 +334,8 @@ MIT
 
 ## 🔗 Links
 
+- [x402 Merchant Launcher](https://github.com/postmanode/x402-merchant-launcher) - Deploy this template
+- [x402 Donation WITH Token Template](https://github.com/PayAINetwork/x402-donation-with-token-template) - Token version
 - [PayAI Network](https://payai.network)
 - [x402 Protocol](https://x402.org)
 - [Solana Docs](https://docs.solana.com)
@@ -414,7 +343,7 @@ MIT
 
 ## ❓ Support
 
-- **Issues**: [GitHub Issues](https://github.com/postmanode/x402-donation-template/issues)
+- **Issues**: [GitHub Issues](https://github.com/PayAINetwork/x402-donation-template/issues)
 - **Discord**: [PayAI Community](https://discord.gg/payai)
 - **Docs**: [x402 Documentation](https://x402.org/docs)
 
