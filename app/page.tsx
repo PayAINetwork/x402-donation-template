@@ -75,6 +75,9 @@ export default function Home() {
   const projectDescription =
     process.env.NEXT_PUBLIC_PROJECT_DESCRIPTION || "Support our project!";
   const projectImage = process.env.NEXT_PUBLIC_PROJECT_IMAGE_URL;
+  const donationTarget = process.env.NEXT_PUBLIC_DONATION_TARGET
+    ? parseFloat(process.env.NEXT_PUBLIC_DONATION_TARGET)
+    : null;
 
   useEffect(() => {
     setMounted(true);
