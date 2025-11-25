@@ -12,7 +12,7 @@ export interface DonationMessage {
     donor_address: string;
     donor_name: string | null;
     amount_usd: number;
-    tokens_minted: number;
+    currency: string;
     message: string | null;
     created_at: Date;
 }
@@ -23,29 +23,29 @@ export interface DonationMessage {
 export async function storeDonation(
     donatorAddress: string,
     amountUsd: number,
-    tokensMinted: number,
     name?: string,
     message?: string,
-    transactionSignature?: string
+    transactionSignature?: string,
+    currency: string = "USDC"
 ): Promise<DonationMessage | null> {
     try {
         const result = await db.insert(donations).values({
             donorAddress: donatorAddress,
             donorName: name || null,
             amountUsd: amountUsd.toString(),
-            tokensMinted,
+            currency,
             message: message || null,
             transactionSignature: transactionSignature || null,
         }).returning();
 
         const donation = result[0];
-        
+
         return {
             id: donation.id,
             donor_address: donation.donorAddress,
             donor_name: donation.donorName,
             amount_usd: parseFloat(donation.amountUsd),
-            tokens_minted: donation.tokensMinted,
+            currency: donation.currency || "USDC",
             message: donation.message,
             created_at: donation.createdAt,
         };
@@ -54,6 +54,7 @@ export async function storeDonation(
         return null;
     }
 }
+
 
 /**
  * Get paginated donations from user's own database
@@ -91,7 +92,7 @@ export async function getDonations(
             donor_address: d.donorAddress,
             donor_name: d.donorName,
             amount_usd: parseFloat(d.amountUsd),
-            tokens_minted: d.tokensMinted,
+            currency: d.currency || "USDC",
             message: d.message,
             created_at: d.createdAt,
         }));
@@ -112,25 +113,22 @@ export async function getDonations(
 export async function getDonationStats(): Promise<{
     totalDonations: number;
     totalAmount: number;
-    totalTokens: number;
 }> {
     try {
         const statsResult = await db
             .select({
                 totalDonations: count(),
                 totalAmount: sql<string>`COALESCE(SUM(${donations.amountUsd}), 0)`,
-                totalTokens: sql<number>`COALESCE(SUM(${donations.tokensMinted}), 0)`,
             })
             .from(donations);
 
         return {
             totalDonations: statsResult[0].totalDonations,
             totalAmount: parseFloat(statsResult[0].totalAmount),
-            totalTokens: statsResult[0].totalTokens,
         };
     } catch (error) {
         console.error('[DB] Error fetching stats:', error);
-        return { totalDonations: 0, totalAmount: 0, totalTokens: 0 };
+        return { totalDonations: 0, totalAmount: 0 };
     }
 }
 

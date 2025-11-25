@@ -6,8 +6,7 @@ import { Check } from "lucide-react";
 
 interface DonationSuccessProps {
   amountUsd: number;
-  tokensMinted: number;
-  tokenSymbol: string;
+  currency?: string;
   name?: string | null;
   message?: string | null;
   transactionSignature?: string;
@@ -17,18 +16,13 @@ interface DonationSuccessProps {
 
 export function DonationSuccess({
   amountUsd,
-  tokensMinted,
-  tokenSymbol,
+  currency = "USDC",
   name,
   message,
   transactionSignature,
   theme = "light",
   onConfirm,
 }: DonationSuccessProps) {
-  const formatTokens = (num: number) => {
-    return num.toLocaleString("en-US", { maximumFractionDigits: 0 });
-  };
-
   const formatTxHash = (hash: string) => {
     if (!hash) return "Pending...";
     return `${hash.slice(0, 8)}...${hash.slice(-8)}`;
@@ -129,32 +123,6 @@ export function DonationSuccess({
                 }}
               >
                 ${amountUsd} USDC
-              </span>
-            </div>
-
-            {/* Tokens Received */}
-            <div className="flex justify-between items-center">
-              <span
-                className="text-sm font-medium"
-                style={{
-                  color:
-                    theme === "dark"
-                      ? "rgba(156, 163, 175, 1)"
-                      : "rgba(113, 113, 122, 1)",
-                }}
-              >
-                Tokens Received
-              </span>
-              <span
-                className="text-sm font-semibold"
-                style={{
-                  color:
-                    theme === "dark"
-                      ? "rgba(255, 255, 255, 1)"
-                      : "rgba(9, 9, 11, 1)",
-                }}
-              >
-                {formatTokens(tokensMinted)} {tokenSymbol}
               </span>
             </div>
 

@@ -1,9 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getTokenConfig,
-  calculateTokensForDonation,
-  transferTokens,
-} from "./token";
 import { storeDonation } from "./db";
 
 export interface DonationHandlerOptions {
@@ -31,11 +26,13 @@ export async function handleDonation(
     }
 
     let payerAddress: string;
+    let transactionSignature: string | null = null;
     try {
       const decoded = JSON.parse(
         Buffer.from(paymentResponse, "base64").toString()
       );
       payerAddress = decoded.payer;
+      transactionSignature = decoded.transaction || null;
     } catch {
       return NextResponse.json(
         { success: false, error: "Invalid payment response" },
@@ -43,33 +40,13 @@ export async function handleDonation(
       );
     }
 
-    // Get token configuration
-    const tokenConfig = getTokenConfig();
-
-    // Calculate tokens to mint
-    const tokensToMint = calculateTokensForDonation(
-      amountUsd,
-      tokenConfig.dollarToTokenRatio
-    );
-
-    if (tokensToMint <= 0) {
-      return NextResponse.json(
-        { success: false, error: "Invalid donation amount" },
-        { status: 400 }
-      );
-    }
-
-    // Transfer tokens to donor
-    const signature = await transferTokens(payerAddress, tokensToMint);
-
     // Store donation record in launcher database
-    await storeDonation(
+    const donation = await storeDonation(
       payerAddress,
       amountUsd,
-      tokensToMint,
       undefined,
       undefined,
-      signature
+      transactionSignature || undefined
     );
 
     return NextResponse.json({
@@ -78,9 +55,8 @@ export async function handleDonation(
       data: {
         donator: payerAddress,
         amountUsd,
-        tokensMinted: tokensToMint,
-        tokenSymbol: tokenConfig.symbol,
-        transactionSignature: signature,
+        currency: donation?.currency || "USDC",
+        transactionSignature: transactionSignature,
       },
     });
   } catch (error) {
