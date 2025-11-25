@@ -22,7 +22,8 @@ export function useX402Payment() {
 
     // Get custom RPC URL if provided
     const customRpc = process.env.NEXT_PUBLIC_SOLANA_RPC_URL;
-    const rpcUrl = customRpc && customRpc.trim().length > 0 ? customRpc : undefined;
+    const rpcUrl =
+      customRpc && customRpc.trim().length > 0 ? customRpc : undefined;
 
     return createX402Client({
       wallet: {

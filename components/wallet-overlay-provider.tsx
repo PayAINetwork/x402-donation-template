@@ -194,9 +194,7 @@ function WalletSelectionOverlay({
                       </p>
                     </div>
                   </div>
-                  <span
-                    className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm font-medium text-white"
-                  >
+                  <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm font-medium text-white">
                     {isActive
                       ? "Disconnect"
                       : pendingWallet === adapterName || connecting
