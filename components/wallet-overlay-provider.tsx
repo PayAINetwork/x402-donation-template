@@ -152,9 +152,18 @@ function WalletSelectionOverlay({
               const isActive =
                 wallet?.adapter.name === adapterName && connected;
               return (
-                <div
+                <button
                   key={adapterName}
-                  className={`flex items-center justify-between pb-4 ${
+                  type="button"
+                  disabled={
+                    !isActive && (connecting || pendingWallet === adapterName)
+                  }
+                  onClick={() =>
+                    isActive
+                      ? void disconnect().then(onClose)
+                      : handleConnect(adapterName)
+                  }
+                  className={`flex w-full items-center justify-between pb-4 text-left transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60 ${
                     index !== visibleWallets.length - 1
                       ? "border-b border-white/10"
                       : ""
@@ -185,25 +194,16 @@ function WalletSelectionOverlay({
                       </p>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    disabled={
-                      !isActive && (connecting || pendingWallet === adapterName)
-                    }
-                    onClick={() =>
-                      isActive
-                        ? void disconnect().then(onClose)
-                        : handleConnect(adapterName)
-                    }
-                    className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
+                  <span
+                    className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm font-medium text-white"
                   >
                     {isActive
                       ? "Disconnect"
                       : pendingWallet === adapterName || connecting
                       ? "Connecting..."
                       : "Connect"}
-                  </button>
-                </div>
+                  </span>
+                </button>
               );
             })}
 

@@ -226,7 +226,19 @@ export default function Home() {
                     : "1px solid rgba(0, 0, 0, 0.16)",
               }}
             >
-              <div className="flex items-center gap-3">
+              <div
+                className="flex items-center gap-3 cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label="Open wallet selector"
+                onClick={() => walletOverlay.open()}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    walletOverlay.open();
+                  }
+                }}
+              >
                 <div
                   className="w-10 h-10 rounded flex items-center justify-center"
                   style={{ background: "#744AC9" }}
@@ -446,7 +458,7 @@ export default function Home() {
               <Textarea
                 value={donorMessage}
                 onChange={(e) => setDonorMessage(e.target.value)}
-                placeholder="Ex: I love your project!"
+                placeholder="E.g. I love this community!"
                 rows={3}
                 className="bg-transparent border-gray-600"
                 style={{

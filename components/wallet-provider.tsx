@@ -27,7 +27,11 @@ export function SolanaWalletProvider({ children }: { children: React.ReactNode }
     // RPC endpoint
     const endpoint = useMemo(() => {
         const customRpc = process.env.NEXT_PUBLIC_SOLANA_RPC_URL;
-        return customRpc || clusterApiUrl(network);
+        // Only use customRpc if it's a non-empty string
+        if (customRpc && customRpc.trim().length > 0) {
+            return customRpc;
+        }
+        return clusterApiUrl(network);
     }, [network]);
 
     // Wallet adapters
