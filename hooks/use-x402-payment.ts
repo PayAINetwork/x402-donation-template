@@ -20,12 +20,18 @@ export function useX402Payment() {
     const network = (process.env.NEXT_PUBLIC_SOLANA_NETWORK ||
       "solana-devnet") as "solana" | "solana-devnet";
 
+    // Get custom RPC URL if provided
+    const customRpc = process.env.NEXT_PUBLIC_SOLANA_RPC_URL;
+    const rpcUrl =
+      customRpc && customRpc.trim().length > 0 ? customRpc : undefined;
+
     return createX402Client({
       wallet: {
         publicKey,
         signTransaction,
       },
       network,
+      ...(rpcUrl && { rpcUrl }),
     });
   }, [publicKey, signTransaction]);
 
