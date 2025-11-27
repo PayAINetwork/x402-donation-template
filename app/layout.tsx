@@ -21,8 +21,10 @@ const tokenDescription =
 const tokenImage =
   process.env.NEXT_PUBLIC_TOKEN_IMAGE_URL || process.env.TOKEN_IMAGE_URL;
 
+const projectName = process.env.NEXT_PUBLIC_PROJECT_NAME || "Project";
+
 export const metadata: Metadata = {
-  title: `${tokenName} (${tokenSymbol}) - Community Donation Portal`,
+  title: `${projectName} - x402 Donations!`,
   description: tokenDescription,
   keywords: [
     tokenName,
@@ -42,14 +44,14 @@ export const metadata: Metadata = {
       }
     : undefined,
   openGraph: {
-    title: `${tokenName} (${tokenSymbol}) - Community Donation Portal`,
+    title: `${projectName} - x402 Donations!`,
     description: tokenDescription,
     images: tokenImage ? [{ url: tokenImage, alt: `${tokenName} Logo` }] : [],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${tokenName} (${tokenSymbol}) - Community Donation Portal`,
+    title: `${projectName} - x402 Donations!`,
     description: tokenDescription,
     images: tokenImage ? [tokenImage] : [],
   },

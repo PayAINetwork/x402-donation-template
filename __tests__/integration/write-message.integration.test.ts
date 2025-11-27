@@ -219,7 +219,7 @@ describe("/api/write-message - Integration Tests", () => {
       const request = createMockRequest(
         "http://localhost:3000/api/write-message",
         {
-          body: { amount: 0.99 },
+          body: { amount: 0.009 },
           paymentHeader,
         }
       );
@@ -230,7 +230,7 @@ describe("/api/write-message - Integration Tests", () => {
 
       // Assert
       expect(data.success).toBe(false);
-      expect(data.error).toContain("at least $1");
+      expect(data.error).toContain("at least $0.01");
       expect(mockStoreDonation).not.toHaveBeenCalled();
     });
 

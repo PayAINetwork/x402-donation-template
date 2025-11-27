@@ -293,7 +293,7 @@ export const middleware = paymentMiddleware(
     },
     // Custom donation with message (amount determined by user)
     "/api/write-message": {
-      price: "$1", // Minimum $1 donation
+      price: "$0.01", // Minimum $0.01 donation (supports custom amounts)
       network,
       config: {
         description: "Donate with custom amount and message",
