@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { storeDonation } from "@/lib/db";
 
 export interface WriteMessageRequest {
-  amount: number; // USD amount (minimum $1)
+  amount: number; // USD amount (minimum $0.01)
   name?: string; // Optional donor name
   message?: string; // Optional message
 }
@@ -51,9 +51,9 @@ export async function POST(request: NextRequest) {
     const { amount, name, message } = body;
 
     // Validate amount
-    if (!amount || amount < 1) {
+    if (!amount || amount < 0.01) {
       return NextResponse.json(
-        { success: false, error: "Amount must be at least $1" },
+        { success: false, error: "Amount must be at least $0.01" },
         { status: 400 }
       );
     }

@@ -43,8 +43,23 @@ interface MessagesResponse {
     stats: {
       totalDonations: number;
       totalAmount: number;
+      biggestDonor?: {
+        donor_name: string | null;
+        donor_address: string | null;
+        amount_usd: number;
+      } | null;
     };
   };
+}
+
+interface Stats {
+  totalDonations: number;
+  totalAmount: number;
+  biggestDonor?: {
+    donor_name: string | null;
+    donor_address: string | null;
+    amount_usd: number;
+  } | null;
 }
 
 export default function Home() {
@@ -57,9 +72,10 @@ export default function Home() {
   const { initiatePayment, isProcessing, error } = useX402Payment();
   const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<DonationMessage[]>([]);
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<Stats>({
     totalDonations: 0,
     totalAmount: 0,
+    biggestDonor: null,
   });
   const [customAmount, setCustomAmount] = useState("10");
   const [selectedQuickAmount, setSelectedQuickAmount] = useState<number | null>(
@@ -105,9 +121,10 @@ export default function Home() {
   const handleDonate = async () => {
     if (!connected || !customAmount) return;
 
-    const amount = parseFloat(customAmount);
-    if (amount < 1) {
-      alert("Minimum donation is $1");
+    // Use two decimal places for USD amount and a minimum of $0.01
+    const amount = Number(parseFloat(customAmount).toFixed(2));
+    if (isNaN(amount) || amount < 0.01) {
+      alert("Minimum donation is $0.01");
       return;
     }
 
@@ -306,7 +323,7 @@ export default function Home() {
               <div className="relative">
                 <Input
                   type="number"
-                  min="1"
+                  min="0.01"
                   step="0.01"
                   value={customAmount}
                   onChange={(e) => {
@@ -482,7 +499,7 @@ export default function Home() {
             <Button
               onClick={handleDonate}
               disabled={
-                isProcessing || !customAmount || parseFloat(customAmount) < 1
+                isProcessing || !customAmount || parseFloat(customAmount) < 0.01
               }
               className="w-full font-bold py-3 rounded-full"
               style={{
@@ -673,6 +690,107 @@ export default function Home() {
                       }}
                     >
                       Total Donors
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      width: "1px",
+                      height: "56px",
+                      background:
+                        theme === "dark"
+                          ? "rgba(255, 255, 255, 0.16)"
+                          : "#E4E4E7",
+                    }}
+                  />
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      padding: "0px",
+                      gap: "4px",
+                      flex: "1",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        textAlign: "center",
+                        color: theme === "dark" ? "#FFFFFF" : "#09090B",
+                      }}
+                    >
+                      {stats.biggestDonor
+                        ? stats.biggestDonor.donor_name
+                          ? stats.biggestDonor.donor_name
+                          : stats.biggestDonor.donor_address
+                          ? formatAddress(stats.biggestDonor.donor_address)
+                          : "-"
+                        : "-"}
+                    </div>
+                    <div
+                      style={{
+                        fontWeight: 400,
+                        fontSize: "12px",
+                        lineHeight: "16px",
+                        textAlign: "center",
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 0.7)"
+                            : "#09090B",
+                      }}
+                    >
+                      Biggest Donor
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      width: "1px",
+                      height: "56px",
+                      background:
+                        theme === "dark"
+                          ? "rgba(255, 255, 255, 0.16)"
+                          : "#E4E4E7",
+                    }}
+                  />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      padding: "0px",
+                      gap: "4px",
+                      flex: "1",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        textAlign: "center",
+                        color: theme === "dark" ? "#FFFFFF" : "#09090B",
+                      }}
+                    >
+                      {`$${stats.totalAmount.toFixed(2)} / ${
+                        donationTarget ? `$${donationTarget}` : `-`
+                      }`}
+                    </div>
+                    <div
+                      style={{
+                        fontWeight: 400,
+                        fontSize: "12px",
+                        lineHeight: "16px",
+                        textAlign: "center",
+                        color:
+                          theme === "dark"
+                            ? "rgba(255, 255, 255, 0.7)"
+                            : "#09090B",
+                      }}
+                    >
+                      Progress
                     </div>
                   </div>
                   <div
@@ -1104,7 +1222,7 @@ export default function Home() {
                 }}
               />
 
-              {/* Average Donation */}
+              {/* Biggest Donor */}
               <div
                 style={{
                   display: "flex",
@@ -1120,7 +1238,13 @@ export default function Home() {
                     color: theme === "dark" ? "#FFFFFF" : "#09090B",
                   }}
                 >
-                  ${(stats.totalAmount / stats.totalDonations || 0).toFixed(2)}
+                  {stats.biggestDonor
+                    ? stats.biggestDonor.donor_name
+                      ? stats.biggestDonor.donor_name
+                      : stats.biggestDonor.donor_address
+                      ? formatAddress(stats.biggestDonor.donor_address)
+                      : "-"
+                    : "-"}
                 </div>
                 <div
                   style={{
@@ -1128,7 +1252,64 @@ export default function Home() {
                       theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
                   }}
                 >
-                  Average Donation
+                  Biggest Donor
+                </div>
+              </div>
+              {/* Progress */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  padding: "0px",
+                  gap: "6px",
+                  flex: "1",
+                }}
+              >
+                <div style={{ width: "100%" }}>
+                  <div
+                    style={{
+                      height: "8px",
+                      background:
+                        theme === "dark" ? "rgba(255,255,255,0.06)" : "#E5E7EB",
+                      borderRadius: "999px",
+                      overflow: "hidden",
+                    }}
+                    aria-hidden
+                  >
+                    <div
+                      style={{
+                        height: "100%",
+                        width: donationTarget
+                          ? `${Math.min(
+                              100,
+                              (stats.totalAmount / donationTarget) * 100
+                            )}%`
+                          : "0%",
+                        background:
+                          "linear-gradient(88.41deg, #744AC9 -3.85%, #22EBAD 111.06%)",
+                        borderRadius: "999px",
+                        transition: "width 0.3s ease",
+                      }}
+                    />
+                  </div>
+                </div>
+                <div
+                  style={{
+                    color: theme === "dark" ? "#FFFFFF" : "#09090B",
+                  }}
+                >
+                  {`$${stats.totalAmount.toFixed(2)} / ${
+                    donationTarget ? `$${donationTarget}` : `-`
+                  }`}
+                </div>
+                <div
+                  style={{
+                    color:
+                      theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
+                  }}
+                >
+                  Progress
                 </div>
               </div>
             </div>
@@ -1304,7 +1485,7 @@ export default function Home() {
               Support Our Community
             </h1>
             <p className="text-sm text-x402-muted">
-              Every contribution directly powers this project.
+              Every contribution directly helps our cause!
             </p>
           </div>
           <div className="flex gap-2"></div>

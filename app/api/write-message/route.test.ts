@@ -158,7 +158,7 @@ describe("/api/write-message", () => {
       expect(mockStoreDonation).not.toHaveBeenCalled();
     });
 
-    it("should return 400 when amount is less than $1", async () => {
+    it("should return 400 when amount is less than $0.01", async () => {
       // Arrange
       const mockPaymentResponse = Buffer.from(
         JSON.stringify({
@@ -175,8 +175,8 @@ describe("/api/write-message", () => {
             "X-PAYMENT-RESPONSE": mockPaymentResponse,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            amount: 0.5,
+            body: JSON.stringify({
+            amount: 0.005,
           }),
         }
       );
@@ -188,7 +188,7 @@ describe("/api/write-message", () => {
       // Assert
       expect(response.status).toBe(400);
       expect(data.success).toBe(false);
-      expect(data.error).toBe("Amount must be at least $1");
+      expect(data.error).toBe("Amount must be at least $0.01");
       expect(mockStoreDonation).not.toHaveBeenCalled();
     });
 
@@ -220,7 +220,7 @@ describe("/api/write-message", () => {
       // Assert
       expect(response.status).toBe(400);
       expect(data.success).toBe(false);
-      expect(data.error).toBe("Amount must be at least $1");
+      expect(data.error).toBe("Amount must be at least $0.01");
     });
 
     it("should return 500 when payment response is invalid", async () => {
