@@ -6,6 +6,7 @@ import {
   useContext,
   useMemo,
   useState,
+  useEffect,
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
@@ -125,13 +126,41 @@ function WalletSelectionOverlay({
     }
   };
 
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
   if (!open || !isClient) {
     return null;
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-lg px-4">
-      <div className="relative w-full max-w-[500px] min-h-[348px] rounded-[24px] border-2 border-white/10 bg-[#171719]/90 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-lg px-4"
+      // When clicking on the backdrop (not the modal), close the overlay
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+      // allow key events in the portal
+      tabIndex={-1}
+      role="presentation"
+    >
+      <div
+        className="relative w-full max-w-[500px] min-h-[348px] rounded-[24px] border-2 border-white/10 bg-[#171719]/90 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+        // Prevent clicks inside modal from propagating to backdrop
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+      >
         <button
           type="button"
           aria-label="Close wallet selector"
