@@ -48,13 +48,20 @@ export function useX402Payment() {
 
     try {
       // Call x402-protected endpoint with automatic payment handling
-      const response = await client.fetch(endpoint, {
+      const fetchOptions: any = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: body ? JSON.stringify(body) : undefined,
-      });
+      };
+
+      // Pass the amount as price for dynamic pricing
+      if (body && typeof body.amount === "number") {
+        fetchOptions.price = `$${body.amount}`;
+      }
+
+      const response = await client.fetch(endpoint, fetchOptions);
 
       if (!response.ok) {
         throw new Error(`Request failed: ${response.statusText}`);

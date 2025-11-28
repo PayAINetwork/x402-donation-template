@@ -61,7 +61,25 @@ export function paymentMiddleware(
       errorMessages,
     } = config;
 
-    const atomicAmountForAsset = processPriceToAtomicAmount(price, network);
+    // For custom amount routes, read the amount from request body
+    let actualPrice = price;
+    if (pathname === "/api/write-message" && method === "POST") {
+      try {
+        const clonedRequest = request.clone();
+        const body = await clonedRequest.json();
+        const amount = body.amount;
+        if (typeof amount === "number" && amount >= 0.01) {
+          actualPrice = `$${amount}`;
+        }
+      } catch (e) {
+        // If body parsing fails, use the default price
+      }
+    }
+
+    const atomicAmountForAsset = processPriceToAtomicAmount(
+      actualPrice,
+      network
+    );
     if ("error" in atomicAmountForAsset) {
       return new NextResponse(atomicAmountForAsset.error, { status: 500 });
     }
