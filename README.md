@@ -195,18 +195,18 @@ Users can enter a custom amount of $PAYAI tokens to write on the wall. The amoun
 
 By default, donations are made in USDC. You can configure a different token for donations using these environment variables:
 
-- `NEXT_PUBLIC_DONATION_INPUT_TOKEN_ADDRESS` - The Solana token mint address (default: USDC on mainnet)
-- `NEXT_PUBLIC_DONATION_INPUT_TOKEN_SYMBOL` - The token symbol (default: "USDC")
-- `NEXT_PUBLIC_DONATION_INPUT_TOKEN_NAME` - The token name (default: "USD Coin")
-- `NEXT_PUBLIC_DONATION_INPUT_TOKEN_DECIMALS` - Number of decimals (default: 6)
+- `NEXT_PUBLIC_TOKEN_ADDRESS` - The Solana token mint address (default: USDC on mainnet)
+- `NEXT_PUBLIC_TOKEN_SYMBOL` - The token symbol (default: "USDC")
+- `NEXT_PUBLIC_TOKEN_NAME` - The token name (default: "USD Coin")
+- `NEXT_PUBLIC_TOKEN_DECIMALS` - Number of decimals (default: 6)
 
 Example for using a custom token:
 
 ```bash
-NEXT_PUBLIC_DONATION_INPUT_TOKEN_ADDRESS=YourTokenMintAddressHere
-NEXT_PUBLIC_DONATION_INPUT_TOKEN_SYMBOL=YOUR
-NEXT_PUBLIC_DONATION_INPUT_TOKEN_NAME=Your Token
-NEXT_PUBLIC_DONATION_INPUT_TOKEN_DECIMALS=9
+NEXT_PUBLIC_TOKEN_ADDRESS=YourTokenMintAddressHere
+NEXT_PUBLIC_TOKEN_SYMBOL=YOUR
+NEXT_PUBLIC_TOKEN_NAME=Your Token
+NEXT_PUBLIC_TOKEN_DECIMALS=9
 ```
 
 **Note**: The x402 facilitator must support the configured token for payments to work.

@@ -18,14 +18,14 @@ export async function GET() {
 
   // Donation token configuration (defaults to USDC)
   const donationTokenAddress =
-    process.env.NEXT_PUBLIC_DONATION_INPUT_TOKEN_ADDRESS ||
+    process.env.NEXT_PUBLIC_TOKEN_ADDRESS ||
     "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC on Solana mainnet
   const donationTokenSymbol =
-    process.env.NEXT_PUBLIC_DONATION_INPUT_TOKEN_SYMBOL || "USDC";
+    process.env.NEXT_PUBLIC_TOKEN_SYMBOL || "USDC";
   const donationTokenName =
-    process.env.NEXT_PUBLIC_DONATION_INPUT_TOKEN_NAME || "USD Coin";
+    process.env.NEXT_PUBLIC_TOKEN_NAME || "USD Coin";
   const donationTokenDecimals = parseInt(
-    process.env.NEXT_PUBLIC_DONATION_INPUT_TOKEN_DECIMALS || "6"
+    process.env.NEXT_PUBLIC_TOKEN_DECIMALS || "6"
   );
 
   const schema = {
