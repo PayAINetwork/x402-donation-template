@@ -15,15 +15,14 @@ export async function GET() {
   const network = process.env.NEXT_PUBLIC_SOLANA_NETWORK || "solana-devnet";
   const facilitator =
     process.env.FACILITATOR_URL || "https://facilitator.payai.network";
+  const projectImageUrl = process.env.NEXT_PUBLIC_PROJECT_IMAGE_URL;
 
   // Donation token configuration (defaults to USDC)
   const donationTokenAddress =
     process.env.NEXT_PUBLIC_TOKEN_ADDRESS ||
     "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC on Solana mainnet
-  const donationTokenSymbol =
-    process.env.NEXT_PUBLIC_TOKEN_SYMBOL || "USDC";
-  const donationTokenName =
-    process.env.NEXT_PUBLIC_TOKEN_NAME || "USD Coin";
+  const donationTokenSymbol = process.env.NEXT_PUBLIC_TOKEN_SYMBOL || "USDC";
+  const donationTokenName = process.env.NEXT_PUBLIC_TOKEN_NAME || "USD Coin";
   const donationTokenDecimals = parseInt(
     process.env.NEXT_PUBLIC_TOKEN_DECIMALS || "6"
   );
@@ -31,6 +30,7 @@ export async function GET() {
   const schema = {
     name: `${tokenName} (${tokenSymbol})`,
     description: `Support ${tokenName} by making a donation and receive ${tokenSymbol} tokens in return. All donations are recorded on the blockchain and displayed on our community message board.`,
+    image: projectImageUrl,
     version: "1.0.0",
     facilitator,
     resources: [

@@ -10,50 +10,36 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const tokenName =
-  process.env.NEXT_PUBLIC_TOKEN_NAME || process.env.TOKEN_NAME || "Token";
-const tokenSymbol =
-  process.env.NEXT_PUBLIC_TOKEN_SYMBOL || process.env.TOKEN_SYMBOL || "TOKEN";
-const tokenDescription =
-  process.env.NEXT_PUBLIC_TOKEN_DESCRIPTION ||
-  process.env.TOKEN_DESCRIPTION ||
-  `Support our community and receive ${tokenSymbol} tokens`;
-const tokenImage =
-  process.env.NEXT_PUBLIC_TOKEN_IMAGE_URL || process.env.TOKEN_IMAGE_URL;
-
 const projectName = process.env.NEXT_PUBLIC_PROJECT_NAME || "Project";
+const projectDescription =
+  process.env.NEXT_PUBLIC_PROJECT_DESCRIPTION || "Support our project!";
+const projectImage = process.env.NEXT_PUBLIC_PROJECT_IMAGE_URL;
 
 export const metadata: Metadata = {
   title: `${projectName} - x402 Donations!`,
-  description: tokenDescription,
-  keywords: [
-    tokenName,
-    tokenSymbol,
-    "donation",
-    "crypto",
-    "solana",
-    "tokens",
-    "community",
-  ],
-  authors: [{ name: tokenName }],
-  icons: tokenImage
+  description: projectDescription,
+  keywords: [projectName, "donation", "crypto", "solana", "community"],
+  authors: [{ name: projectName }],
+  icons: projectImage
     ? {
-        icon: tokenImage,
-        apple: tokenImage,
-        shortcut: tokenImage,
+        icon: projectImage,
+        apple: projectImage,
+        shortcut: projectImage,
       }
     : undefined,
   openGraph: {
     title: `${projectName} - x402 Donations!`,
-    description: tokenDescription,
-    images: tokenImage ? [{ url: tokenImage, alt: `${tokenName} Logo` }] : [],
+    description: projectDescription,
+    images: projectImage
+      ? [{ url: projectImage, alt: `${projectName} Logo` }]
+      : [],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: `${projectName} - x402 Donations!`,
-    description: tokenDescription,
-    images: tokenImage ? [tokenImage] : [],
+    description: projectDescription,
+    images: projectImage ? [projectImage] : [],
   },
   robots: {
     index: true,

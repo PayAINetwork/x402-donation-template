@@ -275,7 +275,7 @@ export type {
 const network = (process.env.NEXT_PUBLIC_SOLANA_NETWORK || "solana-devnet") as
   | "solana"
   | "solana-devnet";
-const resourceWallet = process.env.RESOURCE_SERVER_WALLET_ADDRESS;
+const resourceWallet = process.env.NEXT_PUBLIC_DONATION_WALLET;
 
 // Validate required environment variables
 if (!resourceWallet) {
