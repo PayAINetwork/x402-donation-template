@@ -1,5 +1,6 @@
 // Learn more: https://github.com/testing-library/jest-dom
 // Add custom jest matchers from jest-dom
+/* eslint-disable @typescript-eslint/no-require-imports */
 require("@testing-library/jest-dom");
 
 // Mock environment variables for tests

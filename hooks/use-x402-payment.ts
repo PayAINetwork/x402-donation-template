@@ -48,7 +48,7 @@ export function useX402Payment() {
 
     try {
       // Call x402-protected endpoint with automatic payment handling
-      const fetchOptions: any = {
+      const fetchOptions: RequestInit & { price?: string } = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
