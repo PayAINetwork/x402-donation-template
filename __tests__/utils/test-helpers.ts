@@ -26,7 +26,7 @@ export function createMockRequest(
   url: string,
   options: {
     method?: string;
-    body?: any;
+    body?: unknown;
     paymentHeader?: string;
     headers?: Record<string, string>;
   } = {}
@@ -45,7 +45,7 @@ export function createMockRequest(
   return new NextRequest(url, {
     method,
     headers: allHeaders,
-    ...(body && { body: JSON.stringify(body) }),
+    ...(body ? { body: JSON.stringify(body) } : {}),
   });
 }
 
@@ -70,7 +70,7 @@ export const MOCK_SIGNATURES = {
 /**
  * Create mock donation data
  */
-export function createMockDonation(overrides: Partial<any> = {}) {
+export function createMockDonation(overrides: Record<string, unknown> = {}) {
   return {
     id: 1,
     donor_address: MOCK_WALLET_ADDRESSES.alice,
@@ -86,7 +86,7 @@ export function createMockDonation(overrides: Partial<any> = {}) {
 /**
  * Create multiple mock donations
  */
-export function createMockDonations(count: number): any[] {
+export function createMockDonations(count: number): unknown[] {
   return Array.from({ length: count }, (_, i) =>
     createMockDonation({
       id: i + 1,

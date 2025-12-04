@@ -1,25 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletOverlay } from "@/components/wallet-overlay-provider";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { useX402Payment } from "@/hooks/use-x402-payment";
-import { Loader2, Send, TrendingUp, Users, Coins } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { DonationItem } from "@/components/donation-item";
-import { DonationSuccess } from "@/components/donation-success";
 
 interface DonationMessage {
   id: number;
@@ -84,7 +75,6 @@ export default function Home() {
   const [donorName, setDonorName] = useState("");
   const [donorMessage, setDonorMessage] = useState("");
   const [sortBy, setSortBy] = useState<"recent" | "top">("recent");
-  const [donationResult, setDonationResult] = useState<any>(null);
 
   // Project config from env
   const projectName = process.env.NEXT_PUBLIC_PROJECT_NAME || "Project";
@@ -95,12 +85,7 @@ export default function Home() {
     ? parseFloat(process.env.NEXT_PUBLIC_DONATION_TARGET)
     : null;
 
-  useEffect(() => {
-    setMounted(true);
-    fetchMessages();
-  }, [sortBy]);
-
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       const response = await fetch(`/api/messages?sort=${sortBy}&limit=20`);
       if (response.ok) {
@@ -111,7 +96,13 @@ export default function Home() {
     } catch (err) {
       console.error("Failed to fetch messages:", err);
     }
-  };
+  }, [sortBy]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+    fetchMessages();
+  }, [fetchMessages]);
 
   const handleQuickAmountSelect = (amount: number) => {
     setSelectedQuickAmount(amount);
@@ -129,12 +120,11 @@ export default function Home() {
     }
 
     try {
-      const result = await initiatePayment("/api/write-message", {
+      await initiatePayment("/api/write-message", {
         amount,
         name: donorName || undefined,
         message: donorMessage || undefined,
       });
-      setDonationResult(result);
       setCustomAmount("10");
       setSelectedQuickAmount(10);
       setDonorName("");
@@ -147,15 +137,6 @@ export default function Home() {
 
   const formatAddress = (address: string) => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
   };
 
   const renderDonationPanel = (variant: "mobile" | "desktop") => {
