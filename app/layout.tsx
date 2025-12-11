@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Chelsea_Market } from "next/font/google";
 import "./globals.css";
 import { SolanaWalletProvider } from "@/components/wallet-provider";
 import { Providers } from "@/components/providers";
@@ -7,6 +7,12 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const chelseaMarket = Chelsea_Market({
+  weight: "400",
+  variable: "--font-chelsea-market",
   subsets: ["latin"],
 });
 
@@ -54,7 +60,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} antialiased`}>
+      <body
+        className={`${inter.variable} ${chelseaMarket.variable} antialiased font-sans`}
+      >
         <Providers>
           <div className="fixed right-4 top-4 z-50">
             <ThemeToggle />

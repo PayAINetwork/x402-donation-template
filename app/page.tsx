@@ -8,9 +8,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useX402Payment } from "@/hooks/use-x402-payment";
-import { Loader2 } from "lucide-react";
+import { Loader2, Gift, Star, Snowflake } from "lucide-react";
 import { useTheme } from "next-themes";
 import { DonationItem } from "@/components/donation-item";
+import { SnowEffect } from "@/components/snow-effect";
 
 interface DonationMessage {
   id: number;
@@ -54,13 +55,12 @@ interface Stats {
 }
 
 export default function Home() {
-  // theme comes from next-themes ThemeProvider (or system) — map to 'dark'|'light'
   const { resolvedTheme } = useTheme();
   const theme = (resolvedTheme as "dark" | "light" | undefined) || "light";
 
   const { connected, publicKey, disconnect } = useWallet();
   const walletOverlay = useWalletOverlay();
-  const { initiatePayment, isProcessing, error } = useX402Payment();
+  const { initiatePayment, isProcessing } = useX402Payment();
   const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<DonationMessage[]>([]);
   const [stats, setStats] = useState<Stats>({
@@ -99,7 +99,6 @@ export default function Home() {
   }, [sortBy]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     fetchMessages();
   }, [fetchMessages]);
@@ -112,7 +111,6 @@ export default function Home() {
   const handleDonate = async () => {
     if (!connected || !customAmount) return;
 
-    // Use two decimal places for USD amount and a minimum of $0.01
     const amount = Number(parseFloat(customAmount).toFixed(2));
     if (isNaN(amount) || amount < 0.01) {
       alert("Minimum donation is $0.01");
@@ -129,7 +127,7 @@ export default function Home() {
       setSelectedQuickAmount(10);
       setDonorName("");
       setDonorMessage("");
-      fetchMessages(); // Refresh messages
+      fetchMessages();
     } catch (err) {
       console.error("Donation failed:", err);
     }
@@ -139,889 +137,346 @@ export default function Home() {
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
 
-  const renderDonationPanel = (variant: "mobile" | "desktop") => {
-    const containerClassName =
-      variant === "desktop"
-        ? "container mx-auto px-4 py-8 space-y-6"
-        : "space-y-6";
+  if (!mounted) {
+    return null;
+  }
 
-    const containerStyle =
-      variant === "desktop"
-        ? {
-            background:
-              theme === "dark" ? "transparent" : "rgba(255, 255, 255, 1)",
-          }
-        : {
-            background: theme === "dark" ? "#000000" : "#FFFFFF",
-            border:
-              theme === "dark"
-                ? "1px solid rgba(255, 255, 255, 0.16)"
-                : "1px solid #E4E4E7",
-            borderRadius: "12px",
-            padding: "16px",
-          };
+  // --- Render Helpers ---
 
-    return (
-      <div className={containerClassName} style={containerStyle}>
+  // Reusable Donation Form Panel
+  const renderDonationForm = () => (
+    <div className="flex flex-col h-full bg-white dark:bg-black p-6">
+      <div className="flex-1 flex flex-col gap-4">
+        <div className="text-center">
+          <h2 className="text-xl font-[family-name:var(--font-chelsea)] text-[#09090B] dark:text-white mb-1">
+            Send a Gift 🎁
+          </h2>
+          <p className="text-xs text-gray-500">
+            Support {projectName} with USDC
+          </p>
+        </div>
+
         {!connected ? (
-          <div className="text-center space-y-4">
-            <h1
-              className="text-xl font-bold mb-3"
-              style={{
-                color:
-                  theme === "dark"
-                    ? "rgba(255, 255, 255, 1)"
-                    : "rgba(9, 9, 11, 1)",
-              }}
-            >
-              Connect Wallet
-            </h1>
-            <p className="text-sm text-gray-400">
-              Please connect your Solana wallet to proceed with your donation.
+          <div className="flex-1 flex flex-col items-center justify-center gap-4">
+            <div className="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+              <span className="text-4xl">🎅</span>
+            </div>
+            <p className="text-center text-sm text-gray-500 max-w-xs">
+              Connect your Solana wallet to join the holiday giving spirit.
             </p>
             <Button
               onClick={() => walletOverlay.open()}
-              style={{
-                boxSizing: "border-box",
-                display: variant === "desktop" ? "block" : "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "10px 24px",
-                gap: "8px",
-                width: variant === "desktop" ? "150px" : "100%",
-                height: "40px",
-                background:
-                  "linear-gradient(88.41deg, #744AC9 -3.85%, #22EBAD 111.06%), #09090B",
-                borderRadius: "999px",
-                fontStyle: "normal",
-                fontWeight: 500,
-                fontSize: "14px",
-                lineHeight: "20px",
-                color: "#FFFFFF",
-                textShadow: "0px 3px 4px rgba(0, 0, 0, 0.2)",
-                border: "none",
-                cursor: "pointer",
-                margin: variant === "desktop" ? "0 auto" : undefined,
-              }}
+              className="w-full max-w-xs bg-gradient-to-r from-[#CB272A] to-[#D83228] hover:from-[#A4171D] hover:to-[#CB272A] text-white font-bold py-4 rounded-full shadow-lg transform transition hover:scale-105 text-sm"
             >
-              Select Wallet
+              <Snowflake className="w-4 h-4 mr-2" />
+              Connect Wallet
             </Button>
           </div>
         ) : (
-          <>
-            {/* Connected Wallet Section */}
-            <div
-              className="flex items-center justify-between p-4 rounded-lg"
-              style={{
-                background:
-                  theme === "dark"
-                    ? "rgba(255, 255, 255, 0.06)"
-                    : "rgba(0, 0, 0, 0.06)",
-                border:
-                  theme === "dark"
-                    ? "1px solid rgba(255, 255, 255, 0.16)"
-                    : "1px solid rgba(0, 0, 0, 0.16)",
-              }}
-            >
-              <div
-                className="flex items-center gap-3 cursor-pointer"
-                role="button"
-                tabIndex={0}
-                aria-label="Open wallet selector"
-                onClick={() => walletOverlay.open()}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    walletOverlay.open();
-                  }
-                }}
-              >
-                <div
-                  className="w-10 h-10 rounded flex items-center justify-center"
-                  style={{ background: "#744AC9" }}
-                >
-                  <span
-                    className="text-xl"
-                    style={{
-                      color:
-                        theme === "dark"
-                          ? "rgba(255, 255, 255, 1)"
-                          : "rgba(9, 9, 11, 1)",
-                    }}
-                  >
-                    👤
-                  </span>
+          <div className="flex flex-col gap-4">
+            {/* Connected Wallet Header */}
+            <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl flex items-center justify-between border border-gray-100 dark:border-gray-800">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-[#CB272A] rounded-full flex items-center justify-center text-white font-bold shadow-md text-xs">
+                  {publicKey?.toString()[0]}
                 </div>
-                <div>
-                  <p className="text-sm text-gray-400">Connected Wallet</p>
-                  <p
-                    className="text-sm font-bold"
-                    style={{
-                      color:
-                        theme === "dark"
-                          ? "rgba(255, 255, 255, 1)"
-                          : "rgba(9, 9, 11, 1)",
-                    }}
-                  >
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-gray-400 font-medium">
+                    Connected as
+                  </span>
+                  <span className="font-bold text-xs text-[#09090B] dark:text-white tracking-wide">
                     {publicKey ? formatAddress(publicKey.toString()) : ""}
-                  </p>
+                  </span>
                 </div>
               </div>
               <button
-                onClick={() => disconnect()}
-                className="text-gray-400 text-sm"
-                style={{
-                  color: "inherit",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color =
-                    theme === "dark"
-                      ? "rgba(255, 255, 255, 1)"
-                      : "rgba(9, 9, 11, 1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "";
-                }}
+                onClick={disconnect}
+                className="px-3 py-1 text-[10px] text-red-500 hover:text-red-700 font-medium bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/20 rounded-full transition-colors"
               >
                 Disconnect
               </button>
             </div>
 
-            {/* Amount Section */}
-            <div className="space-y-3">
-              <label
-                className="text-sm font-bold block"
-                style={{
-                  color:
-                    theme === "dark"
-                      ? "rgba(255, 255, 255, 1)"
-                      : "rgba(9, 9, 11, 1)",
-                }}
-              >
-                Amount
-              </label>
-              <div className="relative">
-                <Input
-                  type="number"
-                  min="0.01"
-                  step="0.01"
-                  value={customAmount}
-                  onChange={(e) => {
-                    setCustomAmount(e.target.value);
-                    setSelectedQuickAmount(null);
-                  }}
-                  className="flex-1 bg-transparent border-gray-600"
-                  style={{
-                    paddingRight: "56px",
-                    color:
-                      theme === "dark"
-                        ? "rgba(255, 255, 255, 1)"
-                        : "rgba(9, 9, 11, 1)",
-                    background:
-                      theme === "dark"
-                        ? "rgba(255, 255, 255, 0.06)"
-                        : "rgba(0, 0, 0, 0.06)",
-                    border:
-                      theme === "dark"
-                        ? "1px solid rgba(255, 255, 255, 0.16)"
-                        : "1px solid rgba(0, 0, 0, 0.16)",
-                  }}
-                />
-                <span
-                  style={{
-                    position: "absolute",
-                    right: "16px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    color:
-                      theme === "dark"
-                        ? "rgba(156, 163, 175, 1)"
-                        : "rgba(113, 113, 122, 1)",
-                    pointerEvents: "none",
-                  }}
-                >
-                  USDC
-                </span>
-              </div>
-
-              {/* Quick Donation Buttons */}
-              <div className="flex gap-2">
-                {[1, 5, 10, 15].map((amount) => {
-                  const isSelected = selectedQuickAmount === amount;
-                  return (
-                    <div
-                      key={amount}
-                      style={{
-                        padding: "1px",
-                        background: isSelected
-                          ? "linear-gradient(88.41deg, #744AC9 -3.85%, #22EBAD 111.06%)"
-                          : theme === "dark"
-                          ? "rgba(255, 255, 255, 0.08)"
-                          : "rgba(0, 0, 0, 0.08)",
-                        borderRadius: "0.5rem",
-                      }}
+            {/* Form */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  Amount (USDC)
+                </label>
+                <div className="relative group">
+                  <Input
+                    type="number"
+                    value={customAmount}
+                    onChange={(e) => {
+                      setCustomAmount(e.target.value);
+                      setSelectedQuickAmount(null);
+                    }}
+                    className="pl-4 pr-16 py-4 text-lg font-bold rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5 focus:ring-[#CB272A] focus:border-[#CB272A] transition-all"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-xs text-gray-400 group-focus-within:text-[#CB272A]">
+                    USDC
+                  </span>
+                </div>
+                <div className="flex gap-2 mt-2">
+                  {[1, 5, 10, 20].map((amt) => (
+                    <button
+                      key={amt}
+                      onClick={() => handleQuickAmountSelect(amt)}
+                      className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all transform hover:-translate-y-0.5 ${
+                        selectedQuickAmount === amt
+                          ? "bg-[#CB272A] text-white shadow-lg shadow-red-500/20"
+                          : "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20"
+                      }`}
                     >
-                      <button
-                        onClick={() => handleQuickAmountSelect(amount)}
-                        className="px-4 py-2 rounded-lg font-bold text-sm transition-all"
-                        style={{
-                          color: isSelected
-                            ? theme === "dark"
-                              ? "rgba(255, 255, 255, 1)"
-                              : "rgba(9, 9, 11, 1)"
-                            : theme === "dark"
-                            ? "rgba(156, 163, 175, 1)"
-                            : "rgba(9, 9, 11, 1)",
-                          background:
-                            theme === "dark"
-                              ? "rgba(15, 15, 15, 0.95)"
-                              : "rgba(255, 255, 255, 1)",
-                          border: "1px solid transparent",
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      >
-                        ${amount}
-                      </button>
-                    </div>
-                  );
-                })}
+                      ${amt}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <p
-                className="text-xs"
-                style={{
-                  color:
-                    theme === "dark"
-                      ? "rgba(156, 163, 175, 1)"
-                      : "rgba(113, 113, 122, 1)",
-                }}
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  From (Optional)
+                </label>
+                <Input
+                  placeholder="Santa Claus"
+                  value={donorName}
+                  onChange={(e) => setDonorName(e.target.value)}
+                  className="py-4 rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5 focus:ring-[#CB272A] focus:border-[#CB272A] text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  Message
+                </label>
+                <Textarea
+                  placeholder="Merry Christmas! 🎄"
+                  value={donorMessage}
+                  onChange={(e) => setDonorMessage(e.target.value)}
+                  className="rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5 min-h-[80px] focus:ring-[#CB272A] focus:border-[#CB272A] text-sm"
+                />
+              </div>
+
+              <Button
+                onClick={handleDonate}
+                disabled={isProcessing || !customAmount}
+                className="w-full bg-gradient-to-r from-[#CB272A] to-[#D83228] hover:from-[#A4171D] hover:to-[#CB272A] text-white font-[family-name:var(--font-chelsea)] text-lg py-5 rounded-full shadow-lg shadow-red-500/20 mt-1 disabled:opacity-50 disabled:cursor-not-allowed transform transition active:scale-95"
               >
-                Donations are processed in USDC and sent directly to our
-                receiving wallet.
-              </p>
+                {isProcessing ? (
+                  <Loader2 className="animate-spin mr-2 h-5 w-5" />
+                ) : (
+                  <Gift className="mr-2 mb-1 h-5 w-5" />
+                )}
+                {isProcessing ? "Processing..." : "Donate Gift"}
+              </Button>
             </div>
-
-            {/* Your Name Section */}
-            <div className="space-y-2">
-              <label
-                className="text-sm font-bold block"
-                style={{
-                  color:
-                    theme === "dark"
-                      ? "rgba(255, 255, 255, 1)"
-                      : "rgba(9, 9, 11, 1)",
-                }}
-              >
-                Your Name (Optional)
-              </label>
-              <Input
-                value={donorName}
-                onChange={(e) => setDonorName(e.target.value)}
-                placeholder="e.g. Bob"
-                className="bg-transparent border-gray-600"
-                style={{
-                  color:
-                    theme === "dark"
-                      ? "rgba(255, 255, 255, 1)"
-                      : "rgba(9, 9, 11, 1)",
-                  background:
-                    theme === "dark"
-                      ? "rgba(255, 255, 255, 0.06)"
-                      : "rgba(0, 0, 0, 0.06)",
-                  border:
-                    theme === "dark"
-                      ? "1px solid rgba(255, 255, 255, 0.16)"
-                      : "1px solid rgba(0, 0, 0, 0.16)",
-                }}
-              />
-            </div>
-
-            {/* Message Section */}
-            <div className="space-y-2">
-              <label
-                className="text-sm font-bold block"
-                style={{
-                  color:
-                    theme === "dark"
-                      ? "rgba(255, 255, 255, 1)"
-                      : "rgba(9, 9, 11, 1)",
-                }}
-              >
-                Message (Optional)
-              </label>
-              <Textarea
-                value={donorMessage}
-                onChange={(e) => setDonorMessage(e.target.value)}
-                placeholder="E.g. I love this community!"
-                rows={3}
-                className="bg-transparent border-gray-600"
-                style={{
-                  color:
-                    theme === "dark"
-                      ? "rgba(255, 255, 255, 1)"
-                      : "rgba(9, 9, 11, 1)",
-                  background:
-                    theme === "dark"
-                      ? "rgba(255, 255, 255, 0.06)"
-                      : "rgba(0, 0, 0, 0.06)",
-                  border:
-                    theme === "dark"
-                      ? "1px solid rgba(255, 255, 255, 0.16)"
-                      : "1px solid rgba(0, 0, 0, 0.16)",
-                }}
-              />
-            </div>
-
-            {/* Donate Button */}
-            <Button
-              onClick={handleDonate}
-              disabled={
-                isProcessing || !customAmount || parseFloat(customAmount) < 0.01
-              }
-              className="w-full font-bold py-3 rounded-full"
-              style={{
-                color:
-                  theme === "dark"
-                    ? "rgba(255, 255, 255, 1)"
-                    : "rgba(9, 9, 11, 1)",
-                background: "linear-gradient(to right, #744AC9, #22EBAD)",
-                border: "none",
-              }}
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                `Donate $${customAmount || "0"}`
-              )}
-            </Button>
-
-            {/* Secure Payment Footer */}
-            <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
-              <span className="text-green-500">✓</span>
-              <span>Secure payment powered by Solana</span>
-            </div>
-          </>
+          </div>
         )}
       </div>
-    );
-  };
 
-  if (!mounted) {
-    return null; // Avoid hydration mismatch
-  }
+      <div className="p-3 text-center border-t border-gray-100 dark:border-gray-800 text-[10px] text-gray-400">
+        Secure payment powered by Solana
+      </div>
+    </div>
+  );
 
   return (
     <main
-      className="h-screen flex flex-col md:flex-row overflow-hidden"
+      className="min-h-screen flex flex-col md:flex-row overflow-hidden relative"
       style={{
-        background: theme === "dark" ? "#000000" : "#FFFFFF",
+        background:
+          theme === "dark"
+            ? "linear-gradient(180deg, #0B1E28 0%, #000000 100%)"
+            : "linear-gradient(180deg, #E8FBFF 0%, #FFFFFF 100%)",
       }}
     >
-      {/* Mobile Layout */}
-      <div className="flex md:hidden flex-col h-full overflow-y-auto">
-        {/* Mobile Header */}
-        <header
+      <SnowEffect />
+      {/* Decorative Vectors/Ice (CSS approximations) */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
+        {/* Top Left Blur */}
+        <div className="absolute -top-10 -left-10 w-96 h-96 bg-blue-100/30 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-overlay animate-twinkle" />
+        {/* Bottom Right Blur */}
+        <div
+          className="absolute top-1/2 right-1/4 w-64 h-64 bg-green-100/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-overlay animate-twinkle"
+          style={{ animationDelay: "2s" }}
+        />
+
+        {/* BACKGROUND TREES (With Motion) */}
+        {/* Tree 1 (Left, Large) */}
+        <div
+          className="absolute top-[20%] -left-[5%] w-[300px] h-[500px] bg-gradient-to-b from-[#165B33]/20 to-[#0B2E1A]/20 blur-[40px] animate-sway"
           style={{
-            boxSizing: "border-box",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            padding: "16px",
-            gap: "24px",
-            background: theme === "dark" ? "#000000" : "#FFFFFF",
-            borderBottom:
-              theme === "dark"
-                ? "1px solid rgba(255, 255, 255, 0.16)"
-                : "1px solid #E4E4E7",
+            clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+            animationDelay: "0s",
           }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              padding: "0px",
-              gap: "4px",
-              alignSelf: "stretch",
-            }}
-          >
-            <div
-              style={{
-                fontWeight: 500,
-                fontSize: "16px",
-                lineHeight: "24px",
-                color: theme === "dark" ? "#FFFFFF" : "#09090B",
-              }}
-            >
-              {projectName}
+        />
+        {/* Tree 2 (Left Center, Medium) */}
+        <div
+          className="absolute top-[30%] left-[10%] w-[200px] h-[350px] bg-gradient-to-b from-[#1BB24B]/15 to-[#165B33]/15 blur-[30px] animate-sway"
+          style={{
+            clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+            animationDelay: "2s",
+          }}
+        />
+        {/* Tree 3 (Bottom Center, Small) */}
+        <div
+          className="absolute bottom-[10%] left-[20%] w-[150px] h-[250px] bg-gradient-to-b from-[#165B33]/20 to-[#0B2E1A]/20 blur-[20px] animate-sway"
+          style={{
+            clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+            animationDelay: "4s",
+          }}
+        />
+        {/* Tree 4 (Right side background) */}
+        <div
+          className="absolute top-[15%] right-[40%] w-[250px] h-[400px] bg-gradient-to-b from-[#CB272A]/10 to-[#A4171D]/10 blur-[50px] animate-sway"
+          style={{
+            clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+            animationDelay: "1s",
+          }}
+        />
+      </div>
+
+      {/* LEFT PANEL: Info & Stats */}
+      <div className="w-full md:w-2/3 h-full overflow-y-auto z-10 p-4 md:p-8 flex flex-col gap-5 md:gap-6 relative">
+        {/* Header */}
+        <header className="flex flex-col gap-4 bg-white/70 dark:bg-black/30 backdrop-blur-md rounded-3xl p-5 md:p-6 border-r-4 border-[#CB272A] shadow-sm">
+          <div className="flex items-center gap-4">
+            {projectImage && (
+              <div className="relative flex-shrink-0">
+                <div className="absolute inset-0 bg-[#1BB24B] rounded-full blur-md opacity-40 animate-pulse" />
+                <img
+                  src={projectImage}
+                  alt={projectName}
+                  className="w-12 h-12 md:w-16 md:h-16 rounded-full border-[3px] border-[#12903C] relative z-10 shadow-lg object-cover"
+                />
+              </div>
+            )}
+            <div>
+              <h1 className="text-2xl md:text-3xl font-[family-name:var(--font-chelsea)] text-[#09090B] dark:text-white leading-tight mb-1">
+                {projectName}
+              </h1>
+              <p className="text-[#71717A] dark:text-gray-300 text-xs md:text-sm font-medium">
+                {projectDescription}
+              </p>
             </div>
-            <div
-              style={{
-                fontWeight: 400,
-                fontSize: "14px",
-                lineHeight: "20px",
-                color:
-                  theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
-              }}
-            >
-              {projectDescription}
-            </div>
+          </div>
+
+          {/* Festive Strip */}
+          <div className="w-full h-2 md:h-3 flex overflow-hidden rounded-full opacity-90">
+            {Array.from({ length: 60 }).map((_, i) => (
+              <div
+                key={i}
+                className={`flex-1 h-full transform -skew-x-12 ${
+                  i % 2 === 0 ? "bg-[#D83228]" : "bg-[#248665]"
+                }`}
+              />
+            ))}
           </div>
         </header>
 
-        <div
-          style={{
-            padding: "16px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "24px",
-          }}
-        >
-          {/* Mobile Stats Section */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              padding: "0px",
-              gap: "12px",
-            }}
-          >
-            <div
-              style={{
-                fontWeight: 500,
-                fontSize: "16px",
-                lineHeight: "24px",
-                color: theme === "dark" ? "#FFFFFF" : "#09090B",
-              }}
-            >
-              Statistics
-            </div>
-            <div
-              style={{
-                boxSizing: "border-box",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "flex-start",
-                padding: "12px",
-                gap: "24px",
-                background: theme === "dark" ? "#000000" : "#FFFFFF",
-                borderRadius: "8px",
-                alignSelf: "stretch",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: "0px",
-                  flex: "1",
-                }}
-              >
-                {/* Row 1 */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    padding: "0px",
-                    alignSelf: "stretch",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      padding: "0px",
-                      gap: "4px",
-                      flex: "1",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontWeight: 500,
-                        fontSize: "14px",
-                        lineHeight: "20px",
-                        textAlign: "center",
-                        color: theme === "dark" ? "#FFFFFF" : "#09090B",
-                      }}
-                    >
-                      {stats.totalDonations}
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        fontSize: "12px",
-                        lineHeight: "16px",
-                        textAlign: "center",
-                        color:
-                          theme === "dark"
-                            ? "rgba(255, 255, 255, 0.7)"
-                            : "#09090B",
-                      }}
-                    >
-                      Total Donors
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      width: "1px",
-                      height: "56px",
-                      background:
-                        theme === "dark"
-                          ? "rgba(255, 255, 255, 0.16)"
-                          : "#E4E4E7",
-                    }}
-                  />
+        {/* Stats Board (Glassmorphism) */}
+        <div className="bg-white/40 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-5 md:p-6 border border-white/40 dark:border-white/10 shadow-xl relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      padding: "0px",
-                      gap: "4px",
-                      flex: "1",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontWeight: 500,
-                        fontSize: "14px",
-                        lineHeight: "20px",
-                        textAlign: "center",
-                        color: theme === "dark" ? "#FFFFFF" : "#09090B",
-                      }}
-                    >
-                      {stats.biggestDonor
-                        ? stats.biggestDonor.donor_name
-                          ? stats.biggestDonor.donor_name
-                          : stats.biggestDonor.donor_address
-                          ? formatAddress(stats.biggestDonor.donor_address)
-                          : "-"
-                        : "-"}
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        fontSize: "12px",
-                        lineHeight: "16px",
-                        textAlign: "center",
-                        color:
-                          theme === "dark"
-                            ? "rgba(255, 255, 255, 0.7)"
-                            : "#09090B",
-                      }}
-                    >
-                      Biggest Donor
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      width: "1px",
-                      height: "56px",
-                      background:
-                        theme === "dark"
-                          ? "rgba(255, 255, 255, 0.16)"
-                          : "#E4E4E7",
-                    }}
-                  />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      padding: "0px",
-                      gap: "4px",
-                      flex: "1",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontWeight: 500,
-                        fontSize: "14px",
-                        lineHeight: "20px",
-                        textAlign: "center",
-                        color: theme === "dark" ? "#FFFFFF" : "#09090B",
-                      }}
-                    >
-                      {`$${stats.totalAmount.toFixed(2)} / ${
-                        donationTarget ? `$${donationTarget}` : `-`
-                      }`}
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        fontSize: "12px",
-                        lineHeight: "16px",
-                        textAlign: "center",
-                        color:
-                          theme === "dark"
-                            ? "rgba(255, 255, 255, 0.7)"
-                            : "#09090B",
-                      }}
-                    >
-                      Progress
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      width: "1px",
-                      height: "56px",
-                      background:
-                        theme === "dark"
-                          ? "rgba(255, 255, 255, 0.16)"
-                          : "#E4E4E7",
-                    }}
-                  />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      padding: "0px",
-                      gap: "4px",
-                      flex: "1",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontWeight: 500,
-                        fontSize: "14px",
-                        lineHeight: "20px",
-                        textAlign: "center",
-                        color: theme === "dark" ? "#FFFFFF" : "#09090B",
-                      }}
-                    >
-                      ${stats.totalAmount.toFixed(2)}
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        fontSize: "12px",
-                        lineHeight: "16px",
-                        textAlign: "center",
-                        color:
-                          theme === "dark"
-                            ? "rgba(255, 255, 255, 0.7)"
-                            : "#09090B",
-                      }}
-                    >
-                      Total Donated
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <h2 className="text-lg md:text-xl font-[family-name:var(--font-chelsea)] text-[#09090B] dark:text-white mb-4 flex items-center gap-2">
+            <Star className="text-[#FBB040] fill-[#FBB040] w-5 h-5" /> Community
+            Impact
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-700/50">
+            <div className="pt-4 md:pt-0 text-center md:text-left md:px-6 first:pl-0">
+              <p className="text-2xl font-bold font-[family-name:var(--font-chelsea)] text-[#09090B] dark:text-white">
+                {stats.totalDonations}
+              </p>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">
+                Supporters
+              </p>
+            </div>
+            <div className="pt-4 md:pt-0 text-center md:text-left md:px-6">
+              <p className="text-2xl font-bold font-[family-name:var(--font-chelsea)] text-[#09090B] dark:text-white">
+                ${stats.totalAmount.toFixed(2)}
+              </p>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">
+                Raised
+              </p>
+            </div>
+            <div className="pt-4 md:pt-0 text-center md:text-left md:px-6">
+              <p
+                className="text-2xl font-bold font-[family-name:var(--font-chelsea)] text-[#09090B] dark:text-white truncate"
+                title={stats.biggestDonor?.donor_name || "-"}
+              >
+                {stats.biggestDonor
+                  ? stats.biggestDonor.donor_name ||
+                    formatAddress(stats.biggestDonor.donor_address || "")
+                  : "-"}
+              </p>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">
+                Top Donor
+              </p>
+            </div>
+            <div className="pt-4 md:pt-0 text-center md:text-left md:px-6">
+              <p className="text-2xl font-bold font-[family-name:var(--font-chelsea)] text-[#09090B] dark:text-white">
+                {donationTarget
+                  ? `${Math.round((stats.totalAmount / donationTarget) * 100)}%`
+                  : "∞"}
+              </p>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">
+                Goal
+              </p>
             </div>
           </div>
-          {/* Mobile Donation Section */}
-          <div style={{ width: "100%" }}>{renderDonationPanel("mobile")}</div>
+        </div>
 
-          {/* Mobile Community Section */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              padding: "0px",
-              gap: "12px",
-              flex: "1",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "0px",
-                gap: "24px",
-                alignSelf: "stretch",
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 500,
-                  fontSize: "16px",
-                  lineHeight: "24px",
-                  color: theme === "dark" ? "#FFFFFF" : "#09090B",
-                  flex: "1",
-                }}
+        {/* Donation Feed with Community Board Header */}
+        <div className="flex-1 flex flex-col min-h-[400px]">
+          {/* Community Board Header with Toggles */}
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg md:text-xl font-[family-name:var(--font-chelsea)] text-[#09090B] dark:text-white flex items-center gap-2">
+              <Gift className="text-[#D83228] w-5 h-5" /> Community Board
+            </h2>
+            <div className="flex gap-1 bg-gray-100 dark:bg-white/10 rounded-full p-1 border border-gray-200 dark:border-white/10">
+              <button
+                onClick={() => setSortBy("recent")}
+                className={`px-4 py-1.5 text-xs font-bold rounded-full transition-all ${
+                  sortBy === "recent"
+                    ? "bg-[#CB272A] text-white shadow-md"
+                    : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                }`}
               >
-                Community Board
-              </div>
-              <div
-                style={{
-                  boxSizing: "border-box",
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  padding: "4px",
-                  background:
-                    theme === "dark" ? "rgba(255, 255, 255, 0.1)" : "#EBEBEB",
-                  border:
-                    theme === "dark"
-                      ? "1px solid rgba(255, 255, 255, 0.16)"
-                      : "1px solid rgba(255, 255, 255, 0.16)",
-                  borderRadius: "50px",
-                }}
+                Recent
+              </button>
+              <button
+                onClick={() => setSortBy("top")}
+                className={`px-4 py-1.5 text-xs font-bold rounded-full transition-all ${
+                  sortBy === "top"
+                    ? "bg-[#CB272A] text-white shadow-md"
+                    : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                }`}
               >
-                <button
-                  onClick={() => setSortBy("recent")}
-                  style={{
-                    boxSizing: "border-box",
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: "8px 12px",
-                    background:
-                      sortBy === "recent"
-                        ? theme === "dark"
-                          ? "rgba(255, 255, 255, 0.2)"
-                          : "#09090B"
-                        : "transparent",
-                    borderRadius: "50px",
-                    fontWeight: 500,
-                    fontSize: "14px",
-                    lineHeight: "20px",
-                    textAlign: "center",
-                    color:
-                      sortBy === "recent"
-                        ? "#FFFFFF"
-                        : theme === "dark"
-                        ? "rgba(255, 255, 255, 0.6)"
-                        : "#71717A",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Recent
-                </button>
-                <button
-                  onClick={() => setSortBy("top")}
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: "8px 12px",
-                    background:
-                      sortBy === "top"
-                        ? theme === "dark"
-                          ? "rgba(255, 255, 255, 0.2)"
-                          : "#09090B"
-                        : "transparent",
-                    borderRadius: "50px",
-                    fontWeight: 500,
-                    fontSize: "14px",
-                    lineHeight: "20px",
-                    textAlign: "center",
-                    color:
-                      sortBy === "top"
-                        ? "#FFFFFF"
-                        : theme === "dark"
-                        ? "rgba(255, 255, 255, 0.6)"
-                        : "#71717A",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Top
-                </button>
-              </div>
+                Top
+              </button>
             </div>
-            <div
-              style={{
-                boxSizing: "border-box",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                padding: "24px",
-                gap: "16px",
-                background: theme === "dark" ? "#000000" : "#FFFFFF",
-                border:
-                  theme === "dark"
-                    ? "1px solid rgba(255, 255, 255, 0.16)"
-                    : "1px solid #E4E4E7",
-                borderRadius: "8px",
-                alignSelf: "stretch",
-                minHeight: "444px",
-              }}
-            >
+          </div>
+
+          {/* Feed List */}
+          <div className="bg-white/40 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-5 md:p-6 border border-white/40 dark:border-white/10 shadow-xl flex-1 flex flex-col">
+            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
               {messages.length === 0 ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: "0px",
-                    gap: "16px",
-                    alignSelf: "stretch",
-                    flex: "1",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      padding: "0px",
-                      gap: "6px",
-                      alignSelf: "stretch",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontWeight: 600,
-                        fontSize: "16px",
-                        lineHeight: "24px",
-                        color: theme === "dark" ? "#FFFFFF" : "#09090B",
-                      }}
-                    >
-                      No supporters yet
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: 400,
-                        fontSize: "12px",
-                        lineHeight: "16px",
-                        textAlign: "center",
-                        color:
-                          theme === "dark"
-                            ? "rgba(255, 255, 255, 0.7)"
-                            : "#71717A",
-                      }}
-                    >
-                      You can be the first supporter! Every contribution helps
-                      this project move forward.
-                    </div>
-                  </div>
+                <div className="flex flex-col items-center justify-center h-full text-center p-8 border-2 border-dashed border-gray-300 dark:border-gray-700/50 rounded-2xl bg-white/20 dark:bg-black/10">
+                  <div className="text-6xl mb-4 animate-bounce">🎄</div>
+                  <h4 className="text-xl font-bold text-[#09090B] dark:text-white mb-2">
+                    No supporters yet
+                  </h4>
+                  <p className="text-gray-500 max-w-sm">
+                    Be the first to leave a gift under the tree and start the
+                    holiday cheer!
+                  </p>
                 </div>
               ) : (
-                <div style={{ width: "100%", overflowY: "auto" }}>
+                <div className="space-y-4">
                   {messages.map((msg) => (
-                    <DonationItem
-                      key={msg.id}
-                      id={msg.id}
-                      donor_address={msg.donor_address}
-                      donor_name={msg.donor_name}
-                      amount_usd={msg.amount_usd}
-                      message={msg.message}
-                      created_at={msg.created_at}
-                      theme={theme}
-                    />
+                    <DonationItem key={msg.id} {...msg} theme={theme} />
                   ))}
                 </div>
               )}
@@ -1030,448 +485,14 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Desktop Layout */}
-      <div
-        className="hidden md:flex flex-col overflow-hidden"
-        style={{
-          flex: 3,
-          borderRight:
-            theme === "dark"
-              ? "1px solid rgba(255, 255, 255, 0.16)"
-              : "1px solid rgba(228, 228, 231, 1)",
-        }}
-      >
-        {/* Header */}
-        <header
-          className="border-b"
-          style={{
-            background:
-              theme === "dark" ? "rgba(9, 9, 11, 1)" : "rgba(255, 255, 255, 1)",
-            borderBottom:
-              theme === "dark"
-                ? "1px solid rgba(255, 255, 255, 0.16)"
-                : "1px solid rgba(228, 228, 231, 1)",
-          }}
-        >
-          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              {projectImage && (
-                <img
-                  src={projectImage}
-                  alt={projectName}
-                  className="w-10 h-10 rounded-full"
-                />
-              )}
-              <div>
-                <h1
-                  className="text-2xl font-bold"
-                  style={{
-                    color:
-                      theme === "dark"
-                        ? "rgba(255, 255, 255, 1)"
-                        : "rgba(9, 9, 11, 1)",
-                  }}
-                >
-                  {projectName}
-                </h1>
-                <p className="text-sm text-x402-muted">{projectDescription}</p>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div className="container mx-auto px-4 py-8 flex flex-col flex-1 min-h-0">
-          {/* Stats */}
-          <div
-            style={{
-              boxSizing: "border-box",
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              padding: "16px 24px",
-              gap: "24px",
-              background: theme === "dark" ? "#000000" : "#FFFFFF",
-              borderRadius: "12px",
-              alignSelf: "stretch",
-              marginBottom: "32px",
-              position: "relative",
-            }}
-          >
-            {/* Gradient Border */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: "12px",
-                padding: "2px",
-                background:
-                  "linear-gradient(73.69deg, rgba(150, 71, 253, 0.8) 0%, rgba(34, 235, 173, 0.8) 100.02%)",
-                WebkitMask:
-                  "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                WebkitMaskComposite: "xor",
-                maskComposite: "exclude",
-                pointerEvents: "none",
-                zIndex: 1,
-              }}
-            />
-            {/* Stats Container */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                padding: "0px",
-                gap: "24px",
-                flex: "1",
-                position: "relative",
-                zIndex: 2,
-              }}
-            >
-              {/* Donors Count */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  padding: "0px",
-                  gap: "6px",
-                  flex: "1",
-                }}
-              >
-                <div
-                  style={{
-                    color: theme === "dark" ? "#FFFFFF" : "#09090B",
-                  }}
-                >
-                  {stats.totalDonations}
-                </div>
-                <div
-                  style={{
-                    color:
-                      theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
-                  }}
-                >
-                  Total Donors
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div
-                style={{
-                  width: "1px",
-                  height: "56px",
-                  background:
-                    theme === "dark" ? "rgba(255, 255, 255, 0.16)" : "#E4E4E7",
-                }}
-              />
-
-              {/* Donated Amount */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  padding: "0px",
-                  gap: "6px",
-                  flex: "1",
-                }}
-              >
-                <div
-                  style={{
-                    color: theme === "dark" ? "#FFFFFF" : "#09090B",
-                  }}
-                >
-                  ${stats.totalAmount.toFixed(2)}
-                </div>
-                <div
-                  style={{
-                    color:
-                      theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
-                  }}
-                >
-                  Total Donated
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div
-                style={{
-                  width: "1px",
-                  height: "56px",
-                  background:
-                    theme === "dark" ? "rgba(255, 255, 255, 0.16)" : "#E4E4E7",
-                }}
-              />
-
-              {/* Biggest Donor */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  padding: "0px",
-                  gap: "6px",
-                  flex: "1",
-                }}
-              >
-                <div
-                  style={{
-                    color: theme === "dark" ? "#FFFFFF" : "#09090B",
-                  }}
-                >
-                  {stats.biggestDonor
-                    ? stats.biggestDonor.donor_name
-                      ? stats.biggestDonor.donor_name
-                      : stats.biggestDonor.donor_address
-                      ? formatAddress(stats.biggestDonor.donor_address)
-                      : "-"
-                    : "-"}
-                </div>
-                <div
-                  style={{
-                    color:
-                      theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
-                  }}
-                >
-                  Biggest Donor
-                </div>
-              </div>
-              {/* Progress */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  padding: "0px",
-                  gap: "6px",
-                  flex: "1",
-                }}
-              >
-                <div style={{ width: "100%" }}>
-                  <div
-                    style={{
-                      height: "8px",
-                      background:
-                        theme === "dark" ? "rgba(255,255,255,0.06)" : "#E5E7EB",
-                      borderRadius: "999px",
-                      overflow: "hidden",
-                    }}
-                    aria-hidden
-                  >
-                    <div
-                      style={{
-                        height: "100%",
-                        width: donationTarget
-                          ? `${Math.min(
-                              100,
-                              (stats.totalAmount / donationTarget) * 100
-                            )}%`
-                          : "0%",
-                        background:
-                          "linear-gradient(88.41deg, #744AC9 -3.85%, #22EBAD 111.06%)",
-                        borderRadius: "999px",
-                        transition: "width 0.3s ease",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div
-                  style={{
-                    color: theme === "dark" ? "#FFFFFF" : "#09090B",
-                  }}
-                >
-                  {`$${stats.totalAmount.toFixed(2)} / ${
-                    donationTarget ? `$${donationTarget}` : `-`
-                  }`}
-                </div>
-                <div
-                  style={{
-                    color:
-                      theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
-                  }}
-                >
-                  Progress
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-between items-center mb-4 mt-8">
-            <h1
-              className="font-normal"
-              style={{
-                color:
-                  theme === "dark"
-                    ? "rgba(255, 255, 255, 1)"
-                    : "rgba(9, 9, 11, 1)",
-              }}
-            >
-              Community Board
-            </h1>
-            <div
-              className="flex gap-2 rounded-full"
-              style={{
-                border:
-                  theme === "dark"
-                    ? "1px solid rgba(255, 255, 255, 0.16)"
-                    : "1px solid rgba(228, 228, 231, 1)",
-                background:
-                  theme === "light" ? "rgba(235, 235, 235, 1)" : "transparent",
-              }}
-            >
-              {sortBy === "recent" ? (
-                <button
-                  onClick={() => setSortBy("recent")}
-                  className="px-3 py-1 text-sm rounded-full flex-1"
-                  style={{
-                    background:
-                      theme === "dark"
-                        ? "rgba(255, 255, 255, 0.1)"
-                        : "rgba(9, 9, 11, 1)",
-                    color:
-                      theme === "dark"
-                        ? "rgba(156, 163, 175, 1)"
-                        : "rgba(255, 255, 255, 1)",
-                  }}
-                >
-                  Recent
-                </button>
-              ) : (
-                <button
-                  onClick={() => setSortBy("recent")}
-                  className="px-3 py-1 text-sm rounded-full flex-1"
-                  style={{
-                    background: "transparent",
-                    color:
-                      theme === "dark"
-                        ? "rgba(156, 163, 175, 1)"
-                        : "rgba(113, 113, 122, 1)",
-                  }}
-                >
-                  Recent
-                </button>
-              )}
-              {sortBy === "top" ? (
-                <button
-                  onClick={() => setSortBy("top")}
-                  className="px-3 py-1 text-sm rounded-full flex-1"
-                  style={{
-                    background:
-                      theme === "dark"
-                        ? "rgba(255, 255, 255, 0.1)"
-                        : "rgba(9, 9, 11, 1)",
-                    color:
-                      theme === "dark"
-                        ? "rgba(156, 163, 175, 1)"
-                        : "rgba(255, 255, 255, 1)",
-                  }}
-                >
-                  Top
-                </button>
-              ) : (
-                <button
-                  onClick={() => setSortBy("top")}
-                  className="px-3 py-1 text-sm rounded-full flex-1"
-                  style={{
-                    background: "transparent",
-                    color:
-                      theme === "dark"
-                        ? "rgba(156, 163, 175, 1)"
-                        : "rgba(113, 113, 122, 1)",
-                  }}
-                >
-                  Top
-                </button>
-              )}
-            </div>
-          </div>
-          {/* Message Board */}
-          <Card
-            className="overflow-hidden flex flex-col flex-1 min-h-0"
-            style={{
-              background:
-                theme === "light" ? "rgba(255, 255, 255, 1)" : "transparent",
-              border:
-                theme === "dark"
-                  ? "1px solid rgba(255, 255, 255, 0.16)"
-                  : "1px solid rgba(228, 228, 231, 1)",
-            }}
-          >
-            <CardContent
-              className="flex-1 overflow-y-auto min-h-[400px] flex flex-col hide-scrollbar"
-              style={{
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-              }}
-            >
-              <div className="w-full">
-                {messages.map((msg) => (
-                  <DonationItem
-                    key={msg.id}
-                    id={msg.id}
-                    donor_address={msg.donor_address}
-                    donor_name={msg.donor_name}
-                    amount_usd={msg.amount_usd}
-                    message={msg.message}
-                    created_at={msg.created_at}
-                    theme={theme}
-                  />
-                ))}
-                {messages.length === 0 && (
-                  <div className="flex items-center justify-center h-full min-h-[400px]">
-                    {/* Text Messages */}
-                    <div className="text-center space-y-2">
-                      <h3 className="text-lg font-bold">No supporters yet</h3>
-                      <p
-                        className="text-sm max-w-md mx-auto"
-                        style={{
-                          color:
-                            theme === "dark"
-                              ? "rgba(156, 163, 175, 1)"
-                              : "rgba(113, 113, 122, 1)",
-                        }}
-                      >
-                        You can be the first supporter! Every contribution helps
-                        this project move forward.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      {/* RIGHT PANEL: Action Form (Desktop) */}
+      <div className="hidden md:block w-1/3 min-w-[450px] border-l border-gray-200 dark:border-gray-800 z-20 shadow-2xl">
+        {renderDonationForm()}
       </div>
-      <div style={{ flex: 1 }} className="hidden md:block overflow-hidden">
-        <header
-          className="container mx-auto px-4 py-4"
-          style={{
-            background:
-              theme === "dark" ? "rgba(9, 9, 11, 1)" : "rgba(255, 255, 255, 1)",
-            borderBottom:
-              theme === "dark"
-                ? "1px solid rgba(255, 255, 255, 0.16)"
-                : "1px solid rgba(228, 228, 231, 1)",
-          }}
-        >
-          <div>
-            <h1
-              className="text-2xl font-bold text-nowrap"
-              style={{
-                color:
-                  theme === "dark"
-                    ? "rgba(255, 255, 255, 1)"
-                    : "rgba(9, 9, 11, 1)",
-              }}
-            >
-              Support Our Community
-            </h1>
-            <p className="text-sm text-x402-muted">
-              Every contribution directly helps our cause!
-            </p>
-          </div>
-          <div className="flex gap-2"></div>
-        </header>
-        {renderDonationPanel("desktop")}
+
+      {/* MOBILE: Action Form (Bottom Sheet style or just stacked) */}
+      <div className="block md:hidden w-full border-t border-gray-200 dark:border-gray-800 z-20">
+        {renderDonationForm()}
       </div>
     </main>
   );

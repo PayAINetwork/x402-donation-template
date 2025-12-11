@@ -32,7 +32,9 @@ export function DonationItem({
   };
 
   const isAnonymous = !donor_name;
-  const avatarColor = isAnonymous ? "#744AC9" : "#22EBAD";
+  const avatarColor = isAnonymous
+    ? "#D42426"
+    : "#165B33"; /* Santa Red : Pine Green */
 
   return (
     <div
@@ -87,7 +89,7 @@ export function DonationItem({
               theme === "dark"
                 ? "rgba(24, 24, 26, 1)"
                 : "rgba(244, 244, 245, 1)",
-            borderLeft: "2px solid rgba(150, 71, 253, 1)",
+            borderLeft: "2px solid #F8B229",
           }}
         >
           <p
