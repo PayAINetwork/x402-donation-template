@@ -283,7 +283,7 @@ export default function Home() {
 
   return (
     <main
-      className="min-h-screen flex flex-col md:flex-row overflow-hidden relative"
+      className="min-h-screen flex flex-col md:flex-row md:overflow-hidden relative"
       style={{
         background:
           theme === "dark"
@@ -338,7 +338,7 @@ export default function Home() {
       </div>
 
       {/* LEFT PANEL: Info & Stats */}
-      <div className="w-full md:w-2/3 h-full overflow-y-auto z-10 p-4 md:p-8 flex flex-col gap-5 md:gap-6 relative">
+      <div className="w-full md:w-2/3 h-auto md:h-full md:overflow-y-auto z-10 p-4 md:p-8 flex flex-col gap-5 md:gap-6 relative">
         {/* Header */}
         <header className="flex flex-col gap-4 bg-white/70 dark:bg-black/30 backdrop-blur-md rounded-3xl p-5 md:p-6 border-r-4 border-[#CB272A] shadow-sm">
           <div className="flex items-center gap-4">
@@ -384,7 +384,7 @@ export default function Home() {
             Impact
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-700/50">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-700/50">
             <div className="pt-4 md:pt-0 text-center md:text-left md:px-6 first:pl-0">
               <p className="text-2xl font-bold font-[family-name:var(--font-chelsea)] text-[#09090B] dark:text-white">
                 {stats.totalDonations}
@@ -426,6 +426,11 @@ export default function Home() {
               </p>
             </div>
           </div>
+        </div>
+
+        {/* MOBILE: Action Form (Inserted in flow) */}
+        <div className="block md:hidden w-full rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-800 z-20 shadow-xl">
+          {renderDonationForm()}
         </div>
 
         {/* Donation Feed with Community Board Header */}
@@ -487,11 +492,6 @@ export default function Home() {
 
       {/* RIGHT PANEL: Action Form (Desktop) */}
       <div className="hidden md:block w-1/3 min-w-[450px] border-l border-gray-200 dark:border-gray-800 z-20 shadow-2xl">
-        {renderDonationForm()}
-      </div>
-
-      {/* MOBILE: Action Form (Bottom Sheet style or just stacked) */}
-      <div className="block md:hidden w-full border-t border-gray-200 dark:border-gray-800 z-20">
         {renderDonationForm()}
       </div>
     </main>
