@@ -11,6 +11,7 @@ import { useX402Payment } from "@/hooks/use-x402-payment";
 import { Loader2 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { DonationItem } from "@/components/donation-item";
+import { ChristmasDivider } from "@/components/christmas-divider";
 
 interface DonationMessage {
   id: number;
@@ -168,10 +169,13 @@ export default function Home() {
             <h1
               className="text-xl font-bold mb-3"
               style={{
-                color:
-                  theme === "dark"
-                    ? "rgba(255, 255, 255, 1)"
-                    : "rgba(9, 9, 11, 1)",
+                fontFamily:
+                  "var(--font-chelsea-market), Chelsea Market, cursive",
+                fontWeight: 400,
+                fontSize: "20px",
+                lineHeight: "28px",
+                letterSpacing: "-0.03em",
+                color: "#FAFAFA",
               }}
             >
               Connect Wallet
@@ -191,16 +195,14 @@ export default function Home() {
                 gap: "8px",
                 width: variant === "desktop" ? "150px" : "100%",
                 height: "40px",
-                background:
-                  "linear-gradient(88.41deg, #744AC9 -3.85%, #22EBAD 111.06%), #09090B",
+                background: "#CB272A",
+                border: "1px solid #A21010",
                 borderRadius: "999px",
-                fontStyle: "normal",
+                fontFamily: "Inter",
                 fontWeight: 500,
                 fontSize: "14px",
                 lineHeight: "20px",
                 color: "#FFFFFF",
-                textShadow: "0px 3px 4px rgba(0, 0, 0, 0.2)",
-                border: "none",
                 cursor: "pointer",
                 margin: variant === "desktop" ? "0 auto" : undefined,
               }}
@@ -484,12 +486,13 @@ export default function Home() {
               }
               className="w-full font-bold py-3 rounded-full"
               style={{
-                color:
-                  theme === "dark"
-                    ? "rgba(255, 255, 255, 1)"
-                    : "rgba(9, 9, 11, 1)",
-                background: "linear-gradient(to right, #744AC9, #22EBAD)",
-                border: "none",
+                background: "#CB272A",
+                border: "1px solid #A21010",
+                color: "#FFFFFF",
+                fontFamily: "Inter",
+                fontWeight: 500,
+                fontSize: "14px",
+                lineHeight: "20px",
               }}
             >
               {isProcessing ? (
@@ -534,12 +537,8 @@ export default function Home() {
             flexDirection: "column",
             alignItems: "flex-start",
             padding: "16px",
-            gap: "24px",
+            gap: "0px",
             background: theme === "dark" ? "#000000" : "#FFFFFF",
-            borderBottom:
-              theme === "dark"
-                ? "1px solid rgba(255, 255, 255, 0.16)"
-                : "1px solid #E4E4E7",
           }}
         >
           <div
@@ -548,6 +547,7 @@ export default function Home() {
               flexDirection: "column",
               alignItems: "flex-start",
               padding: "0px",
+              paddingBottom: "16px",
               gap: "4px",
               alignSelf: "stretch",
             }}
@@ -574,6 +574,7 @@ export default function Home() {
               {projectDescription}
             </div>
           </div>
+          <ChristmasDivider />
         </header>
 
         <div
@@ -596,9 +597,12 @@ export default function Home() {
           >
             <div
               style={{
-                fontWeight: 500,
-                fontSize: "16px",
-                lineHeight: "24px",
+                fontFamily:
+                  "var(--font-chelsea-market), Chelsea Market, cursive",
+                fontWeight: 400,
+                fontSize: "20px",
+                lineHeight: "28px",
+                letterSpacing: "-0.03em",
                 color: theme === "dark" ? "#FFFFFF" : "#09090B",
               }}
             >
@@ -851,9 +855,12 @@ export default function Home() {
             >
               <div
                 style={{
-                  fontWeight: 500,
-                  fontSize: "16px",
-                  lineHeight: "24px",
+                  fontFamily:
+                    "var(--font-chelsea-market), Chelsea Market, cursive",
+                  fontWeight: 400,
+                  fontSize: "20px",
+                  lineHeight: "28px",
+                  letterSpacing: "-0.03em",
                   color: theme === "dark" ? "#FFFFFF" : "#09090B",
                   flex: "1",
                 }}
@@ -1046,26 +1053,61 @@ export default function Home() {
           className="border-b"
           style={{
             background:
-              theme === "dark" ? "rgba(9, 9, 11, 1)" : "rgba(255, 255, 255, 1)",
-            borderBottom:
               theme === "dark"
-                ? "1px solid rgba(255, 255, 255, 0.16)"
-                : "1px solid rgba(228, 228, 231, 1)",
+                ? "rgba(255, 255, 255, 0)"
+                : "rgba(255, 255, 255, 1)",
           }}
         >
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-6">
               {projectImage && (
-                <img
-                  src={projectImage}
-                  alt={projectName}
-                  className="w-10 h-10 rounded-full"
-                />
+                <div
+                  className="relative flex items-center justify-center"
+                  style={{ width: "48px", height: "48px", flexShrink: 0 }}
+                >
+                  <div
+                    className="absolute inset-0 rounded-full overflow-hidden"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      margin: "auto",
+                    }}
+                  >
+                    <img
+                      src={projectImage}
+                      alt={projectName}
+                      className="w-full h-full"
+                      style={{
+                        aspectRatio: "1 / 1",
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                    />
+                  </div>
+                  <img
+                    src="/ImageRing.png"
+                    alt="Decorative Ring"
+                    className="absolute pointer-events-none"
+                    style={{
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  />
+                </div>
               )}
               <div>
                 <h1
                   className="text-2xl font-bold"
                   style={{
+                    fontFamily:
+                      "var(--font-chelsea-market), Chelsea Market, cursive",
+                    fontWeight: 400,
+                    fontSize: "20px",
+                    lineHeight: "28px",
+                    letterSpacing: "-0.03em",
                     color:
                       theme === "dark"
                         ? "rgba(255, 255, 255, 1)"
@@ -1074,13 +1116,53 @@ export default function Home() {
                 >
                   {projectName}
                 </h1>
-                <p className="text-sm text-x402-muted">{projectDescription}</p>
+                <p
+                  className="text-sm"
+                  style={{
+                    fontFamily:
+                      "var(--font-chelsea-market), Chelsea Market, cursive",
+                    fontWeight: 400,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    letterSpacing: "-0.03em",
+                    color:
+                      theme === "dark"
+                        ? "rgba(255, 255, 255, 0.7)"
+                        : "rgba(113, 113, 122, 1)",
+                  }}
+                >
+                  {projectDescription}
+                </p>
               </div>
             </div>
           </div>
+          <ChristmasDivider />
         </header>
 
-        <div className="container mx-auto px-4 py-8 flex flex-col flex-1 min-h-0">
+        <div
+          className="container mx-auto px-4 py-8 flex flex-col flex-1 min-h-0"
+          style={{
+            backgroundImage: "url(/websitebg.png)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          {/* Donation Statistic Heading */}
+          <h2
+            style={{
+              fontFamily: "var(--font-chelsea-market), Chelsea Market, cursive",
+              fontWeight: 400,
+              fontSize: "20px",
+              lineHeight: "28px",
+              letterSpacing: "-0.03em",
+              color: "#FAFAFA",
+              marginBottom: "16px",
+            }}
+          >
+            Donation Statistic
+          </h2>
+
           {/* Stats */}
           <div
             style={{
@@ -1090,30 +1172,30 @@ export default function Home() {
               alignItems: "flex-start",
               padding: "16px 24px",
               gap: "24px",
-              background: theme === "dark" ? "#000000" : "#FFFFFF",
+              isolation: "isolate",
+              background: "rgba(255, 255, 255, 0.5)",
+              backdropFilter: "blur(30px)",
+              border: "1px solid rgba(228, 228, 231, 1)",
               borderRadius: "12px",
               alignSelf: "stretch",
               marginBottom: "32px",
               position: "relative",
             }}
           >
-            {/* Gradient Border */}
-            <div
+            {/* Ice Left */}
+            <img
+              src="/ice-left.png"
+              alt="Ice decoration"
               style={{
                 position: "absolute",
-                inset: 0,
-                borderRadius: "12px",
-                padding: "2px",
-                background:
-                  "linear-gradient(73.69deg, rgba(150, 71, 253, 0.8) 0%, rgba(34, 235, 173, 0.8) 100.02%)",
-                WebkitMask:
-                  "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                WebkitMaskComposite: "xor",
-                maskComposite: "exclude",
-                pointerEvents: "none",
+                width: "90.5px",
+                height: "60.14px",
+                left: "-3px",
+                top: "-7px",
                 zIndex: 1,
               }}
             />
+
             {/* Stats Container */}
             <div
               style={{
@@ -1124,10 +1206,10 @@ export default function Home() {
                 gap: "24px",
                 flex: "1",
                 position: "relative",
-                zIndex: 2,
+                zIndex: 0,
               }}
             >
-              {/* Donors Count */}
+              {/* Total Donors */}
               <div
                 style={{
                   display: "flex",
@@ -1140,15 +1222,24 @@ export default function Home() {
               >
                 <div
                   style={{
-                    color: theme === "dark" ? "#FFFFFF" : "#09090B",
+                    fontFamily: "Inter",
+                    fontWeight: 500,
+                    fontSize: "18px",
+                    lineHeight: "28px",
+                    textAlign: "center",
+                    color: "#09090B",
                   }}
                 >
                   {stats.totalDonations}
                 </div>
                 <div
                   style={{
-                    color:
-                      theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
+                    fontFamily: "Inter",
+                    fontWeight: 400,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    color: "#09090B",
                   }}
                 >
                   Total Donors
@@ -1158,14 +1249,14 @@ export default function Home() {
               {/* Divider */}
               <div
                 style={{
-                  width: "1px",
-                  height: "56px",
-                  background:
-                    theme === "dark" ? "rgba(255, 255, 255, 0.16)" : "#E4E4E7",
+                  width: "56px",
+                  height: "0px",
+                  border: "1px solid #E4E4E7",
+                  transform: "rotate(90deg)",
                 }}
               />
 
-              {/* Donated Amount */}
+              {/* Total Donated */}
               <div
                 style={{
                   display: "flex",
@@ -1178,15 +1269,24 @@ export default function Home() {
               >
                 <div
                   style={{
-                    color: theme === "dark" ? "#FFFFFF" : "#09090B",
+                    fontFamily: "Inter",
+                    fontWeight: 500,
+                    fontSize: "18px",
+                    lineHeight: "28px",
+                    textAlign: "center",
+                    color: "#09090B",
                   }}
                 >
                   ${stats.totalAmount.toFixed(2)}
                 </div>
                 <div
                   style={{
-                    color:
-                      theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
+                    fontFamily: "Inter",
+                    fontWeight: 400,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    color: "#09090B",
                   }}
                 >
                   Total Donated
@@ -1196,10 +1296,10 @@ export default function Home() {
               {/* Divider */}
               <div
                 style={{
-                  width: "1px",
-                  height: "56px",
-                  background:
-                    theme === "dark" ? "rgba(255, 255, 255, 0.16)" : "#E4E4E7",
+                  width: "56px",
+                  height: "0px",
+                  border: "1px solid #E4E4E7",
+                  transform: "rotate(90deg)",
                 }}
               />
 
@@ -1216,7 +1316,12 @@ export default function Home() {
               >
                 <div
                   style={{
-                    color: theme === "dark" ? "#FFFFFF" : "#09090B",
+                    fontFamily: "Inter",
+                    fontWeight: 500,
+                    fontSize: "18px",
+                    lineHeight: "28px",
+                    textAlign: "center",
+                    color: "#09090B",
                   }}
                 >
                   {stats.biggestDonor
@@ -1229,13 +1334,28 @@ export default function Home() {
                 </div>
                 <div
                   style={{
-                    color:
-                      theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
+                    fontFamily: "Inter",
+                    fontWeight: 400,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    color: "#09090B",
                   }}
                 >
                   Biggest Donor
                 </div>
               </div>
+
+              {/* Divider */}
+              <div
+                style={{
+                  width: "56px",
+                  height: "0px",
+                  border: "1px solid #E4E4E7",
+                  transform: "rotate(90deg)",
+                }}
+              />
+
               {/* Progress */}
               <div
                 style={{
@@ -1247,37 +1367,14 @@ export default function Home() {
                   flex: "1",
                 }}
               >
-                <div style={{ width: "100%" }}>
-                  <div
-                    style={{
-                      height: "8px",
-                      background:
-                        theme === "dark" ? "rgba(255,255,255,0.06)" : "#E5E7EB",
-                      borderRadius: "999px",
-                      overflow: "hidden",
-                    }}
-                    aria-hidden
-                  >
-                    <div
-                      style={{
-                        height: "100%",
-                        width: donationTarget
-                          ? `${Math.min(
-                              100,
-                              (stats.totalAmount / donationTarget) * 100
-                            )}%`
-                          : "0%",
-                        background:
-                          "linear-gradient(88.41deg, #744AC9 -3.85%, #22EBAD 111.06%)",
-                        borderRadius: "999px",
-                        transition: "width 0.3s ease",
-                      }}
-                    />
-                  </div>
-                </div>
                 <div
                   style={{
-                    color: theme === "dark" ? "#FFFFFF" : "#09090B",
+                    fontFamily: "Inter",
+                    fontWeight: 500,
+                    fontSize: "18px",
+                    lineHeight: "28px",
+                    textAlign: "center",
+                    color: "#09090B",
                   }}
                 >
                   {`$${stats.totalAmount.toFixed(2)} / ${
@@ -1286,51 +1383,83 @@ export default function Home() {
                 </div>
                 <div
                   style={{
-                    color:
-                      theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
+                    fontFamily: "Inter",
+                    fontWeight: 400,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    color: "#09090B",
                   }}
                 >
                   Progress
                 </div>
               </div>
             </div>
+
+            {/* Ice Right */}
+            <img
+              src="/ice-right.png"
+              alt="Ice decoration"
+              style={{
+                position: "absolute",
+                width: "90.5px",
+                height: "60.14px",
+                right: "-3px",
+                top: "-7px",
+                transform: "rotate(360deg)",
+                zIndex: 2,
+              }}
+            />
           </div>
           <div className="flex justify-between items-center mb-4 mt-8">
             <h1
               className="font-normal"
               style={{
-                color:
-                  theme === "dark"
-                    ? "rgba(255, 255, 255, 1)"
-                    : "rgba(9, 9, 11, 1)",
+                fontFamily:
+                  "var(--font-chelsea-market), Chelsea Market, cursive",
+                fontWeight: 400,
+                fontSize: "20px",
+                lineHeight: "28px",
+                letterSpacing: "-0.03em",
+                color: "#FAFAFA",
               }}
             >
               Community Board
             </h1>
             <div
-              className="flex gap-2 rounded-full"
               style={{
-                border:
-                  theme === "dark"
-                    ? "1px solid rgba(255, 255, 255, 0.16)"
-                    : "1px solid rgba(228, 228, 231, 1)",
-                background:
-                  theme === "light" ? "rgba(235, 235, 235, 1)" : "transparent",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                padding: "4px",
+                width: "168px",
+                height: "44px",
+                background: "#FFFFFF",
+                borderRadius: "50px",
               }}
             >
               {sortBy === "recent" ? (
                 <button
                   onClick={() => setSortBy("recent")}
-                  className="px-3 py-1 text-sm rounded-full flex-1"
                   style={{
-                    background:
-                      theme === "dark"
-                        ? "rgba(255, 255, 255, 0.1)"
-                        : "rgba(9, 9, 11, 1)",
-                    color:
-                      theme === "dark"
-                        ? "rgba(156, 163, 175, 1)"
-                        : "rgba(255, 255, 255, 1)",
+                    boxSizing: "border-box",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "8px 16px",
+                    width: "80px",
+                    height: "36px",
+                    background: "#CB272A",
+                    border: "1px solid #A21010",
+                    borderRadius: "50px",
+                    fontFamily: "Inter",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    color: "#FFFFFF",
+                    cursor: "pointer",
                   }}
                 >
                   Recent
@@ -1338,13 +1467,24 @@ export default function Home() {
               ) : (
                 <button
                   onClick={() => setSortBy("recent")}
-                  className="px-3 py-1 text-sm rounded-full flex-1"
                   style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "8px 16px",
+                    width: "80px",
+                    height: "36px",
+                    borderRadius: "50px",
                     background: "transparent",
-                    color:
-                      theme === "dark"
-                        ? "rgba(156, 163, 175, 1)"
-                        : "rgba(113, 113, 122, 1)",
+                    border: "none",
+                    fontFamily: "Inter",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    color: "#71717A",
+                    cursor: "pointer",
                   }}
                 >
                   Recent
@@ -1353,16 +1493,25 @@ export default function Home() {
               {sortBy === "top" ? (
                 <button
                   onClick={() => setSortBy("top")}
-                  className="px-3 py-1 text-sm rounded-full flex-1"
                   style={{
-                    background:
-                      theme === "dark"
-                        ? "rgba(255, 255, 255, 0.1)"
-                        : "rgba(9, 9, 11, 1)",
-                    color:
-                      theme === "dark"
-                        ? "rgba(156, 163, 175, 1)"
-                        : "rgba(255, 255, 255, 1)",
+                    boxSizing: "border-box",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "8px 16px",
+                    width: "80px",
+                    height: "36px",
+                    background: "#CB272A",
+                    border: "1px solid #A21010",
+                    borderRadius: "50px",
+                    fontFamily: "Inter",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    color: "#FFFFFF",
+                    cursor: "pointer",
                   }}
                 >
                   Top
@@ -1370,13 +1519,24 @@ export default function Home() {
               ) : (
                 <button
                   onClick={() => setSortBy("top")}
-                  className="px-3 py-1 text-sm rounded-full flex-1"
                   style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "8px 16px",
+                    width: "80px",
+                    height: "36px",
+                    borderRadius: "50px",
                     background: "transparent",
-                    color:
-                      theme === "dark"
-                        ? "rgba(156, 163, 175, 1)"
-                        : "rgba(113, 113, 122, 1)",
+                    border: "none",
+                    fontFamily: "Inter",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    color: "#71717A",
+                    cursor: "pointer",
                   }}
                 >
                   Top
@@ -1386,16 +1546,46 @@ export default function Home() {
           </div>
           {/* Message Board */}
           <Card
-            className="overflow-hidden flex flex-col flex-1 min-h-0"
+            className="flex flex-col flex-1 min-h-0"
             style={{
-              background:
-                theme === "light" ? "rgba(255, 255, 255, 1)" : "transparent",
+              background: "rgba(255, 255, 255, 0.3)",
+              backdropFilter: "blur(60px)",
               border:
                 theme === "dark"
                   ? "1px solid rgba(255, 255, 255, 0.16)"
                   : "1px solid rgba(228, 228, 231, 1)",
+              position: "relative",
+              overflow: "visible",
             }}
           >
+            {/* Ice Left */}
+            <img
+              src="/ice-left.png"
+              alt="Ice decoration"
+              style={{
+                position: "absolute",
+                width: "90.5px",
+                height: "60.14px",
+                left: "-3px",
+                top: "-7px",
+                zIndex: 1,
+              }}
+            />
+
+            {/* Ice Right */}
+            <img
+              src="/ice-right.png"
+              alt="Ice decoration"
+              style={{
+                position: "absolute",
+                width: "90.5px",
+                height: "60.14px",
+                right: "-3px",
+                top: "-7px",
+                transform: "rotate(360deg)",
+                zIndex: 2,
+              }}
+            />
             <CardContent
               className="flex-1 overflow-y-auto min-h-[400px] flex flex-col hide-scrollbar"
               style={{
@@ -1419,7 +1609,19 @@ export default function Home() {
                 {messages.length === 0 && (
                   <div className="flex items-center justify-center h-full min-h-[400px]">
                     {/* Text Messages */}
-                    <div className="text-center space-y-2">
+                    <div className="text-center space-y-2 flex flex-col items-center">
+                      <div className="flex items-end justify-center -space-x-4 mb-4">
+                        <img
+                          src="/tree.png"
+                          alt="Christmas Tree"
+                          className="w-24 h-auto object-contain z-0"
+                        />
+                        <img
+                          src="/santa.png"
+                          alt="Santa Claus"
+                          className="w-20 h-auto object-contain z-10"
+                        />
+                      </div>
                       <h3 className="text-lg font-bold">No supporters yet</h3>
                       <p
                         className="text-sm max-w-md mx-auto"
@@ -1441,22 +1643,29 @@ export default function Home() {
           </Card>
         </div>
       </div>
-      <div style={{ flex: 1 }} className="hidden md:block overflow-hidden">
+      <div
+        style={{ flex: 1 }}
+        className="hidden md:block overflow-hidden relative"
+      >
         <header
           className="container mx-auto px-4 py-4"
           style={{
             background:
-              theme === "dark" ? "rgba(9, 9, 11, 1)" : "rgba(255, 255, 255, 1)",
-            borderBottom:
               theme === "dark"
-                ? "1px solid rgba(255, 255, 255, 0.16)"
-                : "1px solid rgba(228, 228, 231, 1)",
+                ? "rgba(255, 255, 255, 0)"
+                : "rgba(255, 255, 255, 1)",
           }}
         >
-          <div>
+          <div style={{ minHeight: "60px" }}>
             <h1
               className="text-2xl font-bold text-nowrap"
               style={{
+                fontFamily:
+                  "var(--font-chelsea-market), Chelsea Market, cursive",
+                fontWeight: 400,
+                fontSize: "20px",
+                lineHeight: "28px",
+                letterSpacing: "-0.03em",
                 color:
                   theme === "dark"
                     ? "rgba(255, 255, 255, 1)"
@@ -1465,13 +1674,48 @@ export default function Home() {
             >
               Support Our Community
             </h1>
-            <p className="text-sm text-x402-muted">
-              Every contribution directly helps our cause!
+            <p
+              className="text-sm"
+              style={{
+                fontFamily:
+                  "var(--font-chelsea-market), Chelsea Market, cursive",
+                fontWeight: 400,
+                fontSize: "14px",
+                lineHeight: "20px",
+                letterSpacing: "-0.03em",
+                color:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 0.7)"
+                    : "rgba(113, 113, 122, 1)",
+              }}
+            >
+              Every contribution directly helps our cause! and the kids bla bla
             </p>
           </div>
-          <div className="flex gap-2"></div>
+          <ChristmasDivider />
         </header>
         {renderDonationPanel("desktop")}
+
+        {/* Gifts Decoration */}
+        <div
+          className="absolute bottom-0 right-0 w-full pointer-events-none"
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            zIndex: 0,
+          }}
+        >
+          <img
+            src="/gifts.png"
+            alt="Holiday Gifts"
+            style={{
+              maxHeight: "300px", // Adjust based on preference, keeping it reasonable
+              objectFit: "contain",
+              width: "auto",
+            }}
+          />
+        </div>
       </div>
     </main>
   );

@@ -171,7 +171,18 @@ function WalletSelectionOverlay({
         </button>
 
         <div className="space-y-2 pr-8">
-          <h2 className="text-2xl font-semibold text-white">Connect Wallet</h2>
+          <h2
+            className="text-2xl font-semibold text-white"
+            style={{
+              fontFamily: "var(--font-chelsea-market), Chelsea Market, cursive",
+              fontWeight: 400,
+              fontSize: "20px",
+              lineHeight: "28px",
+              letterSpacing: "-0.03em",
+            }}
+          >
+            Connect Wallet
+          </h2>
         </div>
 
         <div className="mt-6 rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm">
@@ -223,7 +234,18 @@ function WalletSelectionOverlay({
                       </p>
                     </div>
                   </div>
-                  <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm font-medium text-white">
+                  <span
+                    className="rounded-full px-4 py-1.5 text-sm font-medium"
+                    style={{
+                      background: "#CB272A",
+                      border: "1px solid #A21010",
+                      color: "#FFFFFF",
+                      fontFamily: "Inter",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      lineHeight: "20px",
+                    }}
+                  >
                     {isActive
                       ? "Disconnect"
                       : pendingWallet === adapterName || connecting
