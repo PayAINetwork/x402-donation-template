@@ -554,21 +554,32 @@ export default function Home() {
           >
             <div
               style={{
-                fontWeight: 500,
-                fontSize: "16px",
-                lineHeight: "24px",
-                color: theme === "dark" ? "#FFFFFF" : "#09090B",
+                fontFamily:
+                  "var(--font-chelsea-market), Chelsea Market, cursive",
+                fontWeight: 400,
+                fontSize: "20px",
+                lineHeight: "28px",
+                letterSpacing: "-0.03em",
+                color:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 1)"
+                    : "rgba(9, 9, 11, 1)",
               }}
             >
               {projectName}
             </div>
             <div
               style={{
+                fontFamily:
+                  "var(--font-chelsea-market), Chelsea Market, cursive",
                 fontWeight: 400,
                 fontSize: "14px",
                 lineHeight: "20px",
+                letterSpacing: "-0.03em",
                 color:
-                  theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "#71717A",
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 0.7)"
+                    : "rgba(113, 113, 122, 1)",
               }}
             >
               {projectDescription}
@@ -583,6 +594,10 @@ export default function Home() {
             display: "flex",
             flexDirection: "column",
             gap: "24px",
+            backgroundImage: "url(/websitebg.png)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}
         >
           {/* Mobile Stats Section */}
@@ -616,7 +631,9 @@ export default function Home() {
                 alignItems: "flex-start",
                 padding: "12px",
                 gap: "24px",
-                background: theme === "dark" ? "#000000" : "#FFFFFF",
+                background: "rgba(255, 255, 255, 0.5)",
+                backdropFilter: "blur(30px)",
+                border: "1px solid rgba(228, 228, 231, 1)",
                 borderRadius: "8px",
                 alignSelf: "stretch",
               }}
@@ -869,47 +886,35 @@ export default function Home() {
               </div>
               <div
                 style={{
-                  boxSizing: "border-box",
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
                   padding: "4px",
-                  background:
-                    theme === "dark" ? "rgba(255, 255, 255, 0.1)" : "#EBEBEB",
-                  border:
-                    theme === "dark"
-                      ? "1px solid rgba(255, 255, 255, 0.16)"
-                      : "1px solid rgba(255, 255, 255, 0.16)",
+                  width: "168px",
+                  height: "44px",
+                  background: "#FFFFFF",
                   borderRadius: "50px",
                 }}
               >
                 <button
                   onClick={() => setSortBy("recent")}
                   style={{
-                    boxSizing: "border-box",
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                    padding: "8px 12px",
-                    background:
-                      sortBy === "recent"
-                        ? theme === "dark"
-                          ? "rgba(255, 255, 255, 0.2)"
-                          : "#09090B"
-                        : "transparent",
+                    padding: "8px 16px",
+                    width: "80px",
+                    height: "36px",
+                    background: sortBy === "recent" ? "#CB272A" : "transparent",
+                    border: sortBy === "recent" ? "1px solid #A21010" : "none",
                     borderRadius: "50px",
+                    fontFamily: "Inter",
                     fontWeight: 500,
                     fontSize: "14px",
                     lineHeight: "20px",
                     textAlign: "center",
-                    color:
-                      sortBy === "recent"
-                        ? "#FFFFFF"
-                        : theme === "dark"
-                        ? "rgba(255, 255, 255, 0.6)"
-                        : "#71717A",
-                    border: "none",
+                    color: sortBy === "recent" ? "#FFFFFF" : "#71717A",
                     cursor: "pointer",
                   }}
                 >
@@ -922,25 +927,18 @@ export default function Home() {
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                    padding: "8px 12px",
-                    background:
-                      sortBy === "top"
-                        ? theme === "dark"
-                          ? "rgba(255, 255, 255, 0.2)"
-                          : "#09090B"
-                        : "transparent",
+                    padding: "8px 16px",
+                    width: "80px",
+                    height: "36px",
+                    background: sortBy === "top" ? "#CB272A" : "transparent",
+                    border: sortBy === "top" ? "1px solid #A21010" : "none",
                     borderRadius: "50px",
+                    fontFamily: "Inter",
                     fontWeight: 500,
                     fontSize: "14px",
                     lineHeight: "20px",
                     textAlign: "center",
-                    color:
-                      sortBy === "top"
-                        ? "#FFFFFF"
-                        : theme === "dark"
-                        ? "rgba(255, 255, 255, 0.6)"
-                        : "#71717A",
-                    border: "none",
+                    color: sortBy === "top" ? "#FFFFFF" : "#71717A",
                     cursor: "pointer",
                   }}
                 >
@@ -956,11 +954,12 @@ export default function Home() {
                 alignItems: "flex-start",
                 padding: "24px",
                 gap: "16px",
-                background: theme === "dark" ? "#000000" : "#FFFFFF",
+                background: "rgba(255, 255, 255, 0.3)",
+                backdropFilter: "blur(60px)",
                 border:
                   theme === "dark"
                     ? "1px solid rgba(255, 255, 255, 0.16)"
-                    : "1px solid #E4E4E7",
+                    : "1px solid rgba(228, 228, 231, 1)",
                 borderRadius: "8px",
                 alignSelf: "stretch",
                 minHeight: "444px",
